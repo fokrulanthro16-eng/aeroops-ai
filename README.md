@@ -4,6 +4,7 @@
 ### Autonomous Flight Readiness & In-Flight Fleet Risk Intelligence Platform
 **Engineered for Advanced Air Mobility (eVTOL) & BVLOS Drone Fleet Operations**
 
+[![Avionics & Flight Readiness Test Matrix](https://github.com/fokrulanthro16-eng/aeroops-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/fokrulanthro16-eng/aeroops-ai/actions)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
@@ -14,6 +15,35 @@
 
 *From raw aviation telemetry to explainable, evidence-backed GO / AMBER / NO-GO mission releases and dynamic in-air deconfliction.*
 
+</div>
+
+---
+
+## 📸 Cockpit Showcase & Operational Visuals
+
+### 1. Pre-Flight Readiness Cockpit & 60/40 Vector Radar Split View
+*High-resolution glassmorphic operations console displaying 5-factor safety gates, vector corridors, and dynamic Point of No Return (PONR) calculation.*
+
+<div align="center">
+  <img src="docs/screenshots/hero-cockpit-dispatch.svg" alt="AeroOps AI Pre-Flight Cockpit" width="100%" />
+</div>
+
+---
+
+### 2. Active 1Hz In-Flight Telemetry HUD & Destination Turnaround Matrix
+*Real-time 1Hz avionics streaming, live battery thermal modeling, anomaly injectors (Wind Shear / Battery Decay), and automated Burbank alternate vertiport diversion.*
+
+<div align="center">
+  <img src="docs/screenshots/inflight-telemetry-hud.svg" alt="AeroOps AI In-Flight Telemetry HUD" width="100%" />
+</div>
+
+---
+
+### 3. DO-178C Cryptographic Blackbox Audit Ledger
+*SHA-256 Merkle-Chain flight record ledger generating tamper-evident operational blocks for regulatory authorities and insurance underwriters.*
+
+<div align="center">
+  <img src="docs/screenshots/cryptographic-audit-ledger.svg" alt="AeroOps AI Blackbox Audit Ledger" width="100%" />
 </div>
 
 ---

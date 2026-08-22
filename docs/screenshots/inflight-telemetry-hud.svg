@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" style="background:#0A0E17; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <rect width="1200" height="680" fill="#0A0E17" />
+
+  <!-- Active In-Flight HUD Strip -->
+  <rect x="40" y="40" width="1120" height="240" rx="24" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+  <circle cx="75" cy="75" r="18" fill="rgba(16,185,129,0.2)" stroke="#10B981" />
+  <text x="68" y="80" fill="#10B981" font-size="14">⚡</text>
+  <text x="105" y="72" fill="#FFFFFF" font-size="16" font-weight="bold">ACTIVE 1Hz IN-FLIGHT AVIONICS STREAM</text>
+  <text x="105" y="90" fill="#94A3B8" font-size="11" font-family="monospace">Phase: <tspan fill="#38BDF8" font-weight="bold">CRUISE</tspan> • Alt: <tspan fill="#FFFFFF" font-weight="bold">1,500 ft</tspan> • Ground Speed: <tspan fill="#38BDF8" font-weight="bold">104 kt</tspan></text>
+
+  <!-- Anomaly Trigger Buttons -->
+  <rect x="800" y="60" width="150" height="34" rx="17" fill="rgba(244,63,94,0.15)" stroke="rgba(244,63,94,0.3)" />
+  <text x="815" y="81" fill="#F43F5E" font-size="11" font-weight="bold">⚠ Inject Wind Shear</text>
+
+  <rect x="960" y="60" width="175" height="34" rx="17" fill="rgba(245,158,11,0.15)" stroke="rgba(245,158,11,0.3)" />
+  <text x="975" y="81" fill="#F59E0B" font-size="11" font-weight="bold">🔥 Inject SOC Anomaly</text>
+
+  <!-- 4 Gauges -->
+  <g transform="translate(60, 120)">
+    <rect x="0" y="0" width="240" height="130" rx="16" fill="rgba(2,6,23,0.6)" />
+    <text x="120" y="55" fill="#38BDF8" font-size="28" font-weight="bold" font-family="monospace" text-anchor="middle">44.8°C</text>
+    <text x="120" y="78" fill="#94A3B8" font-size="11" text-anchor="middle">Cell Temp (Limit 55°C)</text>
+
+    <rect x="260" y="0" width="240" height="130" rx="16" fill="rgba(2,6,23,0.6)" />
+    <text x="380" y="55" fill="#10B981" font-size="28" font-weight="bold" font-family="monospace" text-anchor="middle">145 kW</text>
+    <text x="380" y="78" fill="#94A3B8" font-size="11" text-anchor="middle">Instantaneous Draw</text>
+
+    <rect x="520" y="0" width="240" height="130" rx="16" fill="rgba(2,6,23,0.6)" />
+    <text x="640" y="55" fill="#10B981" font-size="28" font-weight="bold" font-family="monospace" text-anchor="middle">85.5%</text>
+    <text x="640" y="78" fill="#94A3B8" font-size="11" text-anchor="middle">Live SOC (Target: 86.2%)</text>
+
+    <rect x="780" y="0" width="260" height="130" rx="16" fill="rgba(2,6,23,0.6)" />
+    <text x="910" y="55" fill="#38BDF8" font-size="28" font-weight="bold" font-family="monospace" text-anchor="middle">17.7 km</text>
+    <text x="910" y="78" fill="#94A3B8" font-size="11" text-anchor="middle">Distance Flown (Rem: 20.8 km)</text>
+  </g>
+
+  <!-- Destination Vertiport Matrix -->
+  <rect x="40" y="310" width="1120" height="180" rx="24" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(255,255,255,0.08)" />
+  <text x="65" y="340" fill="#FFFFFF" font-size="14" font-weight="bold">DESTINATION VERTIPORT TURNAROUND &amp; CHARGING MATRIX (KBUR)</text>
+
+  <g transform="translate(65, 360)">
+    <rect x="0" y="0" width="245" height="105" rx="16" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.3)" />
+    <text x="15" y="25" fill="#FFFFFF" font-size="12" font-weight="bold">Pad Alpha-1 [LOCKED]</text>
+    <text x="15" y="50" fill="#38BDF8" font-size="11">Power: 450 kW DC Fast</text>
+    <text x="15" y="70" fill="#10B981" font-size="11">Target SOC: 90%</text>
+    <text x="15" y="92" fill="#94A3B8" font-size="10">Est. Clear: 16:15 UTC</text>
+
+    <rect x="265" y="0" width="245" height="105" rx="16" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="280" y="25" fill="#94A3B8" font-size="12" font-weight="bold">Pad Bravo-2 [OCCUPIED]</text>
+    <text x="280" y="50" fill="#94A3B8" font-size="11">Assigned: WSK-402</text>
+    <text x="280" y="70" fill="#F59E0B" font-size="11">Charging: 62%</text>
+    <text x="280" y="92" fill="#94A3B8" font-size="10">Est. Clear: 16:05 UTC</text>
+
+    <rect x="530" y="0" width="245" height="105" rx="16" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="545" y="25" fill="#10B981" font-size="12" font-weight="bold">Pad Charlie-3 [AVAILABLE]</text>
+    <text x="545" y="50" fill="#38BDF8" font-size="11">Power: 350 kW DC</text>
+    <text x="545" y="70" fill="#10B981" font-size="11">Status: Open Standby</text>
+    <text x="545" y="92" fill="#94A3B8" font-size="10">Clear Now</text>
+
+    <rect x="795" y="0" width="245" height="105" rx="16" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="810" y="25" fill="#10B981" font-size="12" font-weight="bold">Pad Delta-4 [AVAILABLE]</text>
+    <text x="810" y="50" fill="#38BDF8" font-size="11">Power: 350 kW DC</text>
+    <text x="810" y="70" fill="#10B981" font-size="11">Status: Open Standby</text>
+    <text x="810" y="92" fill="#94A3B8" font-size="10">Clear Now</text>
+  </g>
+</svg>
