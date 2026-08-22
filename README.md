@@ -1,6 +1,6 @@
 <div align="center">
 
-# âœˆï¸ AeroOps AI v2.0
+# ✈️ AeroOps AI v2.0
 ### Autonomous Flight Readiness & In-Flight Fleet Risk Intelligence Platform
 **Engineered for Advanced Air Mobility (eVTOL) & BVLOS Drone Fleet Operations**
 
@@ -19,36 +19,19 @@
 
 ---
 
-## ðŸ“¸ Cockpit Showcase & Operational Visuals
+## 📸 Executive Visual Cockpit (Vista Voyage Inspired)
 
-### 1. Pre-Flight Readiness Cockpit & 60/40 Vector Radar Split View
-*High-resolution glassmorphic operations console displaying 5-factor safety gates, vector corridors, and dynamic Point of No Return (PONR) calculation.*
+![AeroOps AI Pre-Flight Cockpit](https://raw.githubusercontent.com/fokrulanthro16-eng/aeroops-ai/main/docs/screenshots/hero-cockpit-dispatch.png)
 
-<div align="center">
-  <img src="./docs/screenshots/hero-cockpit-dispatch.svg" alt="AeroOps AI Pre-Flight Cockpit" width="100%" />
-</div>
+<br/>
 
----
-
-### 2. Active 1Hz In-Flight Telemetry HUD & Destination Turnaround Matrix
-*Real-time 1Hz avionics streaming, live battery thermal modeling, anomaly injectors (Wind Shear / Battery Decay), and automated Burbank alternate vertiport diversion.*
-
-<div align="center">
-  <img src="./docs/screenshots/inflight-telemetry-hud.svg" alt="AeroOps AI In-Flight Telemetry HUD" width="100%" />
-</div>
+| Active In-Flight HUD (1Hz) | DO-178C Blackbox Ledger |
+| :---: | :---: |
+| ![Active In-Flight HUD](https://raw.githubusercontent.com/fokrulanthro16-eng/aeroops-ai/main/docs/screenshots/inflight-telemetry-hud.png) | ![DO-178C Blackbox Ledger](https://raw.githubusercontent.com/fokrulanthro16-eng/aeroops-ai/main/docs/screenshots/cryptographic-audit-ledger.png) |
 
 ---
 
-### 3. DO-178C Cryptographic Blackbox Audit Ledger
-*SHA-256 Merkle-Chain flight record ledger generating tamper-evident operational blocks for regulatory authorities and insurance underwriters.*
-
-<div align="center">
-  <img src="./docs/screenshots/cryptographic-audit-ledger.svg" alt="AeroOps AI Blackbox Audit Ledger" width="100%" />
-</div>
-
----
-
-## ðŸ§­ Core Philosophy: *"Rules Engine Decides, AI Explains"*
+## 🧭 Core Philosophy: *"Rules Engine Decides, AI Explains"*
 
 In safety-critical aviation (**DO-178C / FAA Part 135 / EASA SC-VTOL**), probabilistic GenAI models must **never** be single points of failure for flight-critical go/no-go clearances. 
 
@@ -58,7 +41,7 @@ AeroOps AI enforces a strict, robust architectural boundary:
 
 ---
 
-## ðŸ›ï¸ System Architecture
+## 🏛️ System Architecture
 
 ```mermaid
 graph TD
@@ -98,7 +81,7 @@ graph TD
 
 ---
 
-## âš¡ Key Capabilities & Technical Highlights
+## ⚡ Key Capabilities & Technical Highlights
 
 ### 1. Dual-Mode Operational Cockpit
 - **Pre-Flight Readiness Dispatch:** 5-factor risk scoring with instant safety interlock checklists and tactile What-If aerodynamic performance sliders.
@@ -122,16 +105,16 @@ $$\text{Hash}_n = \text{SHA256}(\text{Hash}_{n-1} + \text{Timestamp} + \text{Tel
 
 ---
 
-## ðŸ§ª Rigorous Verification & Test Matrix
+## 🧪 Rigorous Verification & Test Matrix
 
-- âœ” **Unit & Physics Tests:** `39 / 39 PASSED` (0 failures)
-- âœ” **End-to-End Integration:** `16 / 16 PASSED` (0 errors)
-- âœ” **TypeScript Static Check:** `0 errors / 100% Type-Safe`
-- âœ” **Production Compilation:** `Next.js 14 (HTTP 200 OK)`
+- ✔ **Unit & Physics Tests:** `39 / 39 PASSED` (0 failures)
+- ✔ **End-to-End Integration:** `16 / 16 PASSED` (0 errors)
+- ✔ **TypeScript Static Check:** `0 errors / 100% Type-Safe`
+- ✔ **Production Compilation:** `Next.js 14 (HTTP 200 OK)`
 
 ---
 
-## ðŸš€ Quickstart & Local Setup
+## 🚀 Quickstart & Local Setup
 
 ```bash
 # 1. Clone the repository
@@ -156,6 +139,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ---
 
-## ðŸ“œ License
+## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
