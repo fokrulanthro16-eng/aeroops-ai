@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sliders, RotateCcw, AlertTriangle, Shield, Wind, Battery, Weight, Thermometer } from "lucide-react";
+import { Sliders, RotateCcw, Wind, Battery, Weight, Thermometer, Shield, AlertTriangle } from "lucide-react";
 
 interface WhatIfParams {
   windSpeedKts: number;
@@ -28,39 +28,55 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
   maxCrosswindKts,
 }) => {
   return (
-    <div className="rounded-xl bg-obsidian-900/90 border border-cyan-500/30 p-4 sm:p-5 shadow-[0_0_20px_rgba(6,182,212,0.1)]">
-      <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-2.5">
-        <div className="flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-xs font-mono uppercase tracking-wider text-slate-200 font-semibold">
-            Aerodynamic "What-If" Telemetry Simulator
-          </h3>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-mono">
-            REAL-TIME DETERMINISTIC ENGINE
-          </span>
+    <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <Sliders className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold tracking-wide text-white font-sans">
+                Aerodynamic "What-If" Performance Studio
+              </h3>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 font-semibold">
+                REAL-TIME DETERMINISTIC
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 font-sans mt-0.5">
+              Interact with physical variables to recalculate aerodynamic envelopes and PONR thresholds in real-time
+            </p>
+          </div>
         </div>
 
         <button
           onClick={onReset}
-          className="flex items-center gap-1 text-xs font-mono text-slate-400 hover:text-cyan-300 transition"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-950/60 hover:bg-slate-900 border border-white/10 text-xs font-medium text-slate-300 hover:text-cyan-300 transition"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset Defaults</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* 1. Wind Speed Slider */}
-        <div className="space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Wind className="w-3.5 h-3.5 text-cyan-400" />
+      {/* Sliders Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 1. Wind Speed */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Wind className="w-4 h-4 text-cyan-400" />
               Wind Speed
             </span>
-            <span className={`font-bold ${params.windSpeedKts > maxCrosswindKts ? "text-red-400" : "text-cyan-300"}`}>
-              {params.windSpeedKts} kts
+            <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full border text-xs ${
+              params.windSpeedKts > maxCrosswindKts
+                ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                : "bg-cyan-500/15 text-cyan-300 border-cyan-400/30"
+            }`}>
+              {params.windSpeedKts} kt
             </span>
           </div>
+
           <input
             type="range"
             min="0"
@@ -68,8 +84,9 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             step="1"
             value={params.windSpeedKts}
             onChange={(e) => onChange({ windSpeedKts: Number(e.target.value) })}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-400"
           />
+
           <div className="flex justify-between text-[10px] font-mono text-slate-500">
             <span>0 kt (Calm)</span>
             <span className="text-amber-400">Limit: {maxCrosswindKts} kt</span>
@@ -77,17 +94,18 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
           </div>
         </div>
 
-        {/* 2. Wind Direction Slider */}
-        <div className="space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Wind className="w-3.5 h-3.5 text-cyan-400" />
-              Wind Direction
+        {/* 2. Wind Direction */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Wind className="w-4 h-4 text-cyan-400" />
+              Wind Direction (Azimuth)
             </span>
-            <span className="font-bold text-cyan-300 font-mono">
-              {params.windDirDeg}° (Azimuth)
+            <span className="font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/30 text-xs">
+              {params.windDirDeg}°
             </span>
           </div>
+
           <input
             type="range"
             min="0"
@@ -95,28 +113,33 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             step="5"
             value={params.windDirDeg}
             onChange={(e) => onChange({ windDirDeg: Number(e.target.value) })}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-400"
           />
+
           <div className="flex justify-between text-[10px] font-mono text-slate-500">
             <span>000° (N)</span>
             <span>090° (E)</span>
             <span>180° (S)</span>
             <span>270° (W)</span>
-            <span>360°</span>
           </div>
         </div>
 
-        {/* 3. Payload Weight Slider */}
-        <div className="space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Weight className="w-3.5 h-3.5 text-cyan-400" />
+        {/* 3. Payload Mass */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Weight className="w-4 h-4 text-cyan-400" />
               Cargo / Pax Payload
             </span>
-            <span className={`font-bold ${params.payloadKg > maxPayloadKg ? "text-red-400" : "text-cyan-300"}`}>
+            <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full border text-xs ${
+              params.payloadKg > maxPayloadKg
+                ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                : "bg-cyan-500/15 text-cyan-300 border-cyan-400/30"
+            }`}>
               {params.payloadKg} kg
             </span>
           </div>
+
           <input
             type="range"
             min="0"
@@ -124,8 +147,9 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             step="10"
             value={params.payloadKg}
             onChange={(e) => onChange({ payloadKg: Number(e.target.value) })}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-400"
           />
+
           <div className="flex justify-between text-[10px] font-mono text-slate-500">
             <span>0 kg</span>
             <span className="text-amber-400">Max: {maxPayloadKg} kg</span>
@@ -133,17 +157,22 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
           </div>
         </div>
 
-        {/* 4. Initial Battery SOC Slider */}
-        <div className="space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Battery className="w-3.5 h-3.5 text-cyan-400" />
+        {/* 4. Departure Battery SOC */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Battery className="w-4 h-4 text-emerald-400" />
               Departure Battery SOC
             </span>
-            <span className={`font-bold ${params.initialSocPercent < 30 ? "text-red-400" : "text-emerald-300"}`}>
+            <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full border text-xs ${
+              params.initialSocPercent < 30
+                ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+            }`}>
               {params.initialSocPercent}%
             </span>
           </div>
+
           <input
             type="range"
             min="20"
@@ -151,26 +180,32 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             step="1"
             value={params.initialSocPercent}
             onChange={(e) => onChange({ initialSocPercent: Number(e.target.value) })}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+            className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-emerald-400"
           />
+
           <div className="flex justify-between text-[10px] font-mono text-slate-500">
             <span>20%</span>
-            <span>50%</span>
+            <span>60%</span>
             <span className="text-emerald-400">100% Full</span>
           </div>
         </div>
 
-        {/* 5. Ambient Temperature Slider */}
-        <div className="space-y-1.5 p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Thermometer className="w-3.5 h-3.5 text-cyan-400" />
-              Ambient Temp (Derating)
+        {/* 5. Ambient Temperature */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Thermometer className="w-4 h-4 text-cyan-400" />
+              Ambient Temp (Cold Derate)
             </span>
-            <span className={`font-bold ${params.tempC < 10 ? "text-amber-400" : "text-slate-200"}`}>
-              {params.tempC}°C {params.tempC < 10 ? `(-${Math.round((10 - params.tempC) * 0.8)}% cap)` : "(Nominal)"}
+            <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full border text-xs ${
+              params.tempC < 10
+                ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+                : "bg-slate-800 text-slate-200 border-white/10"
+            }`}>
+              {params.tempC}°C {params.tempC < 10 ? `(-${Math.round((10 - params.tempC) * 0.8)}%)` : ""}
             </span>
           </div>
+
           <input
             type="range"
             min="-15"
@@ -178,40 +213,45 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
             step="1"
             value={params.tempC}
             onChange={(e) => onChange({ tempC: Number(e.target.value) })}
-            className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-cyan-400"
           />
+
           <div className="flex justify-between text-[10px] font-mono text-slate-500">
-            <span>-15°C (Severe Cold)</span>
-            <span className="text-cyan-400">10°C (Derate Threshold)</span>
+            <span>-15°C</span>
+            <span className="text-cyan-400">10°C (Threshold)</span>
             <span>45°C</span>
           </div>
         </div>
 
-        {/* 6. Active TFR Incursion Toggle */}
-        <div className="flex flex-col justify-between p-3 rounded-lg bg-slate-900/60 border border-slate-800">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-300 flex items-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 text-red-400" />
+        {/* 6. Active VIP TFR Incursion Toggle */}
+        <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.05] flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between text-xs font-sans">
+            <span className="text-slate-300 font-medium flex items-center gap-2">
+              <Shield className="w-4 h-4 text-rose-400" />
               VIP TFR Airspace Incursion
             </span>
-            <span className={`font-bold ${params.enableTfr ? "text-red-400" : "text-emerald-400"}`}>
+            <span className={`font-mono font-bold px-2.5 py-0.5 rounded-full border text-xs ${
+              params.enableTfr
+                ? "bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse"
+                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            }`}>
               {params.enableTfr ? "ACTIVE NOTAM" : "CLEAR"}
             </span>
           </div>
 
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-[11px] font-mono text-slate-400">
-              Force corridor into active VIP security ring:
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-[11px] font-sans text-slate-400">
+              Corridor VIP restriction:
             </span>
             <button
               onClick={() => onChange({ enableTfr: !params.enableTfr })}
-              className={`px-3 py-1 text-xs font-mono font-bold rounded-md transition-all ${
+              className={`px-4 py-1.5 text-xs font-sans font-semibold rounded-full transition-all ${
                 params.enableTfr
-                  ? "bg-red-600 text-white shadow-[0_0_12px_rgba(239,68,68,0.5)]"
-                  : "bg-slate-800 text-slate-400 hover:text-slate-200"
+                  ? "bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.4)]"
+                  : "bg-slate-900 text-slate-400 hover:text-slate-200 border border-white/10"
               }`}
             >
-              {params.enableTfr ? "TFR ACTIVE" : "DISABLED"}
+              {params.enableTfr ? "TFR Active" : "Disabled"}
             </button>
           </div>
         </div>

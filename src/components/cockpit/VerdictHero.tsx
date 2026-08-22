@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, AlertTriangle, XCircle, ShieldCheck, ShieldAlert, ArrowRight } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, ArrowRight, ShieldCheck, Check, X, ShieldAlert } from "lucide-react";
 import { FlightMission } from "@/types/aviation";
 
 interface VerdictHeroProps {
@@ -11,131 +11,172 @@ interface VerdictHeroProps {
 export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
   const verdict = mission.risk.verdict;
   const score = mission.risk.compositeScore;
+  const hardGates = mission.risk.hardGates;
   const failedGatesCount = mission.risk.failedGatesCount;
 
   const verdictConfig = {
     GO: {
-      bg: "bg-emerald-950/40",
-      border: "border-emerald-500/50",
-      glow: "shadow-[0_0_30px_rgba(16,185,129,0.25)]",
-      titleText: "text-emerald-400",
-      title: "MISSION AUTHORIZATION: GO",
-      badgeBg: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-      icon: <CheckCircle2 className="w-8 h-8 text-emerald-400" />,
-      subtext: "All deterministic safety gates verified. Operational risk index nominal.",
+      glow: "from-emerald-500/20 via-emerald-500/5 to-transparent",
+      badge: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 shadow-[0_0_20px_rgba(16,185,129,0.25)]",
+      title: "MISSION AUTHORIZED: GO",
+      scoreColor: "text-emerald-400",
+      ringColor: "#10B981",
+      icon: <CheckCircle2 className="w-6 h-6 text-emerald-400" />,
+      subtext: "All deterministic safety gates verified. Atmospheric, aerodynamic, and reserve margins nominal.",
     },
     AMBER: {
-      bg: "bg-amber-950/40",
-      border: "border-amber-500/50",
-      glow: "shadow-[0_0_30px_rgba(245,158,11,0.25)]",
-      titleText: "text-amber-400",
+      glow: "from-amber-500/20 via-amber-500/5 to-transparent",
+      badge: "bg-amber-500/15 text-amber-300 border-amber-400/30 shadow-[0_0_20px_rgba(245,158,11,0.25)]",
       title: "SUPERVISORY CAUTION: AMBER",
-      badgeBg: "bg-amber-500/20 text-amber-300 border-amber-500/40",
-      icon: <AlertTriangle className="w-8 h-8 text-amber-400 animate-bounce" />,
-      subtext: "Elevated risk vectors identified. Pilot/Operator review & mitigations required.",
+      scoreColor: "text-amber-400",
+      ringColor: "#F59E0B",
+      icon: <AlertTriangle className="w-6 h-6 text-amber-400" />,
+      subtext: "Elevated risk vectors detected. Review crosswinds, thermal derating, and alternate divert filing.",
     },
     NO_GO: {
-      bg: "bg-red-950/40",
-      border: "border-red-500/60",
-      glow: "shadow-[0_0_30px_rgba(239,68,68,0.3)]",
-      titleText: "text-red-400",
-      title: "FLIGHT RELEASE PROHIBITED: NO-GO",
-      badgeBg: "bg-red-500/20 text-red-300 border-red-500/40",
-      icon: <XCircle className="w-8 h-8 text-red-400 animate-pulse" />,
-      subtext: "Hard Safety Gate violation detected. Mission aborted by safety rules engine.",
+      glow: "from-rose-500/25 via-rose-500/5 to-transparent",
+      badge: "bg-rose-500/15 text-rose-300 border-rose-400/30 shadow-[0_0_20px_rgba(244,63,94,0.25)]",
+      title: "FLIGHT RELEASE BARRED: NO-GO",
+      scoreColor: "text-rose-400",
+      ringColor: "#F43F5E",
+      icon: <XCircle className="w-6 h-6 text-rose-400" />,
+      subtext: "Fatal Safety Gate violation detected. Flight authorization revoked by deterministic rules engine.",
     },
   }[verdict];
 
-  return (
-    <div
-      className={`relative overflow-hidden rounded-xl border p-4 sm:p-6 transition-all duration-300 ${verdictConfig.bg} ${verdictConfig.border} ${verdictConfig.glow}`}
-    >
-      {/* Background Decorative Tech Lines */}
-      <div className="absolute top-0 right-0 w-96 h-full pointer-events-none opacity-10 bg-cockpit-grid" />
-      <div className="absolute -right-12 -bottom-12 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none bg-cyan-500" />
+  // Circular SVG score progress ring
+  const radius = 38;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (circumference * score) / 100;
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        {/* Left: Verdict & Status Details */}
-        <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-lg bg-obsidian-950/80 border border-slate-800 shrink-0">
-            {verdictConfig.icon}
+  return (
+    <div className="relative glass-panel rounded-3xl p-6 sm:p-8 overflow-hidden">
+      {/* Soft Ambient Radial Glow */}
+      <div
+        className={`absolute -top-24 -right-24 w-96 h-96 rounded-full blur-3xl opacity-30 pointer-events-none bg-gradient-to-br ${verdictConfig.glow}`}
+      />
+
+      <div className="relative z-10 space-y-6">
+        {/* Top Header: Callsign & Status Badge */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
+              {verdictConfig.icon}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-white tracking-wide">
+                  {mission.callsign}
+                </span>
+                <span className="text-xs text-slate-400 font-mono">• {mission.aircraft.model}</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-400 mt-0.5">
+                <span>{mission.origin.icao}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
+                <span>{mission.destination.icao}</span>
+                <span className="text-slate-500">|</span>
+                <span>{mission.routeDistanceKm} km ({Math.round(mission.routeDistanceKm * 0.539957)} NM)</span>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className={`text-xl sm:text-2xl font-black font-mono tracking-tight ${verdictConfig.titleText}`}>
-                {verdictConfig.title}
-              </span>
-              <span className={`text-[11px] px-2.5 py-0.5 rounded-full border font-mono font-bold uppercase tracking-wider ${verdictConfig.badgeBg}`}>
-                {verdict}
-              </span>
-            </div>
-
-            <p className="text-sm text-slate-300 font-sans font-medium max-w-2xl">
-              {verdictConfig.subtext}
-            </p>
-
-            {/* Flight Segment Route Indicator */}
-            <div className="flex flex-wrap items-center gap-3 mt-3 text-xs font-mono text-slate-400">
-              <span className="text-cyan-300 font-semibold">{mission.callsign}</span>
-              <span>•</span>
-              <span className="flex items-center gap-1.5 text-slate-200">
-                {mission.origin.icao} ({mission.origin.name.split(" ")[0]})
-                <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
-                {mission.destination.icao} ({mission.destination.name.split(" ")[0]})
-              </span>
-              <span>•</span>
-              <span>{mission.routeDistanceKm} km ({Math.round(mission.routeDistanceKm * 0.539957)} NM)</span>
-              <span>•</span>
-              <span className="text-slate-300">{mission.aircraft.model}</span>
-            </div>
+          {/* Large Luxury Verdict Pill */}
+          <div className={`px-5 py-2 rounded-full border text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${verdictConfig.badge}`}>
+            <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+            {verdictConfig.title}
           </div>
         </div>
 
-        {/* Right: Risk Index & Hard Gate Summary Scorecard */}
-        <div className="flex items-center gap-4 self-stretch lg:self-auto justify-end border-t lg:border-t-0 lg:border-l border-slate-800/80 pt-3 lg:pt-0 lg:pl-6">
-          {/* Risk Score */}
-          <div className="flex flex-col items-center justify-center px-4 py-2 rounded-lg bg-obsidian-950/70 border border-slate-800">
-            <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider">
-              Risk Score
-            </span>
-            <div className="flex items-baseline gap-1">
-              <span
-                className={`text-3xl font-black font-mono tracking-tight ${
-                  score < 30 ? "text-emerald-400" : score < 60 ? "text-amber-400" : "text-red-400"
-                }`}
-              >
-                {score}
-              </span>
-              <span className="text-xs text-slate-500 font-mono">/100</span>
+        {/* Center: Risk Ring Gauge & Executive Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          {/* Circular Risk Index Gauge */}
+          <div className="md:col-span-4 flex items-center justify-center p-4 rounded-2xl bg-slate-950/40 border border-white/[0.05]">
+            <div className="relative flex items-center justify-center">
+              <svg width="100" height="100" className="transform -rotate-90">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r={radius}
+                  stroke="rgba(255, 255, 255, 0.08)"
+                  strokeWidth="8"
+                  fill="transparent"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r={radius}
+                  stroke={verdictConfig.ringColor}
+                  strokeWidth="8"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                  fill="transparent"
+                  style={{ transition: "stroke-dashoffset 0.6s ease-out" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className={`text-2xl font-black font-mono tracking-tight ${verdictConfig.scoreColor}`}>
+                  {score}
+                </span>
+                <span className="text-[9px] uppercase font-mono text-slate-400 tracking-wider">
+                  Risk Index
+                </span>
+              </div>
             </div>
-            <span className="text-[10px] font-mono text-slate-400">
-              {score < 30 ? "Low Risk" : score < 60 ? "Moderate" : "Prohibitive"}
-            </span>
+
+            <div className="ml-4 space-y-0.5 font-sans">
+              <span className="text-xs font-semibold text-slate-200 block">
+                {score < 30 ? "Nominal Index" : score < 60 ? "Advisory Range" : "Prohibitive Index"}
+              </span>
+              <p className="text-[11px] text-slate-400 font-mono">
+                {failedGatesCount === 0 ? "5 / 5 Gates Clear" : `${failedGatesCount} Gate Violations`}
+              </p>
+            </div>
           </div>
 
-          {/* Hard Gates Counter */}
-          <div className="flex flex-col items-center justify-center px-4 py-2 rounded-lg bg-obsidian-950/70 border border-slate-800">
-            <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider">
-              Hard Gates
+          {/* Subtext description */}
+          <div className="md:col-span-8 p-4 rounded-2xl bg-slate-950/30 border border-white/[0.04] text-xs text-slate-300 leading-relaxed font-sans">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block mb-1">
+              Deterministic Safety Assessment:
             </span>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              {failedGatesCount === 0 ? (
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              ) : (
-                <ShieldAlert className="w-5 h-5 text-red-400 animate-pulse" />
-              )}
-              <span
-                className={`text-2xl font-black font-mono ${
-                  failedGatesCount === 0 ? "text-emerald-400" : "text-red-400"
+            {verdictConfig.subtext}
+          </div>
+        </div>
+
+        {/* Bottom Checklist: 5 Deterministic Safety Gates */}
+        <div className="border-t border-white/[0.06] pt-4">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold block mb-3">
+            Deterministic Safety Interlocks Checklist:
+          </span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+            {hardGates.map((gate) => (
+              <div
+                key={gate.gateId}
+                className={`p-2.5 rounded-2xl border text-[11px] font-mono transition-all flex items-start gap-2 ${
+                  gate.passed
+                    ? "bg-slate-950/40 border-white/[0.06] text-slate-300"
+                    : "bg-rose-500/10 border-rose-500/30 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.15)]"
                 }`}
               >
-                {5 - failedGatesCount}/5
-              </span>
-            </div>
-            <span className="text-[10px] font-mono text-slate-400">
-              {failedGatesCount === 0 ? "All Clear" : `${failedGatesCount} Failed`}
-            </span>
+                <span
+                  className={`flex items-center justify-center w-4 h-4 rounded-full mt-0.5 shrink-0 ${
+                    gate.passed
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                      : "bg-rose-500/20 text-rose-400 border border-rose-500/40 animate-pulse"
+                  }`}
+                >
+                  {gate.passed ? <Check className="w-2.5 h-2.5" /> : <X className="w-2.5 h-2.5" />}
+                </span>
+
+                <div className="min-w-0">
+                  <div className="font-semibold text-slate-200 truncate">{gate.name}</div>
+                  <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                    {gate.telemetryValue}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

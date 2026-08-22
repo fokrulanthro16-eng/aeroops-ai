@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plane, Compass, Activity, FileText, RefreshCw, Layers } from "lucide-react";
+import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck } from "lucide-react";
+import { FlightViewMode } from "./FlightModeToggle";
 
 interface TopNavProps {
   currentMode: "LIVE" | "SIM" | "HYBRID";
@@ -12,6 +13,8 @@ interface TopNavProps {
   onOpenDispatchSheet: () => void;
   isLiveLoading?: boolean;
   onRefreshLive?: () => void;
+  flightViewMode?: FlightViewMode;
+  onFlightViewModeChange?: (mode: FlightViewMode) => void;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
@@ -22,13 +25,15 @@ export const TopNav: React.FC<TopNavProps> = ({
   onOpenDispatchSheet,
   isLiveLoading = false,
   onRefreshLive,
+  flightViewMode = "PREFLIGHT",
+  onFlightViewModeChange,
 }) => {
   const [utcTime, setUtcTime] = useState<string>("");
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setUtcTime(now.toISOString().substring(0, 19).replace("T", " ") + " UTC");
+      setUtcTime(now.toISOString().substring(11, 19) + " UTC");
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
@@ -36,95 +41,105 @@ export const TopNav: React.FC<TopNavProps> = ({
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-obsidian-950/80 backdrop-blur-xl px-4 lg:px-8 py-3">
-      <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-        {/* Brand & Glass Cockpit Logo */}
-        <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-slate-900 border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-            <Plane className="w-5 h-5 text-cyan-400 transform -rotate-45" />
-            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-            </span>
+    <header className="w-full max-w-[1840px] mx-auto px-4 sm:px-6 pt-4 pb-2">
+      <div className="glass-pill rounded-full px-5 sm:px-7 py-3 flex flex-col lg:flex-row items-center justify-between gap-4">
+        {/* Left: Minimalist Brand & Status Chip */}
+        <div className="flex items-center gap-3.5">
+          <div className="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-tr from-cyan-500/20 to-indigo-500/20 border border-cyan-400/30 shadow-[0_0_20px_rgba(56,189,248,0.25)]">
+            <Plane className="w-4 h-4 text-cyan-300 transform -rotate-45" />
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold tracking-tight text-slate-100 font-mono">
-                AERTOPS<span className="text-cyan-400 font-sans">.AI</span>
+              <span className="text-base font-bold tracking-tight text-white font-sans">
+                AeroOps<span className="text-cyan-400 font-light ml-0.5">AI</span>
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-mono font-semibold tracking-wider">
-                DYSON SKY V2.5
+              <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 tracking-wide font-mono">
+                AERO-EDITORIAL OS
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-mono flex items-center gap-1.5">
-              <Activity className="w-3 h-3 text-emerald-400 animate-pulse" />
-              Autonomous Flight Readiness & Operational Risk Engine
-            </p>
           </div>
         </div>
 
-        {/* Center: Live UTC Master Clock & Preset Scenarios */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {/* UTC Clock */}
-          <div className="px-3 py-1 rounded bg-slate-900/90 border border-slate-800 text-xs font-mono text-cyan-300 flex items-center gap-2 shadow-inner">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            {utcTime || "0000-00-00 00:00:00 UTC"}
-          </div>
-
-          {/* Preset Scenario Selectors */}
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] uppercase font-mono text-slate-400 px-1.5 hidden sm:inline">
-              Presets:
-            </span>
-            <button
-              onClick={() => onSelectScenario("scenario1")}
-              className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-all ${
-                activeScenarioKey === "scenario1"
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
-                  : "text-slate-400 hover:text-emerald-300 hover:bg-slate-800"
-              }`}
-            >
-              1. Nominal [GO]
-            </button>
-            <button
-              onClick={() => onSelectScenario("scenario2")}
-              className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-all ${
-                activeScenarioKey === "scenario2"
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
-                  : "text-slate-400 hover:text-amber-300 hover:bg-slate-800"
-              }`}
-            >
-              2. Edge [AMBER]
-            </button>
-            <button
-              onClick={() => onSelectScenario("scenario3")}
-              className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-all ${
-                activeScenarioKey === "scenario3"
-                  ? "bg-red-500/20 text-red-300 border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
-                  : "text-slate-400 hover:text-red-300 hover:bg-slate-800"
-              }`}
-            >
-              3. Severe [NO-GO]
-            </button>
-          </div>
-        </div>
-
-        {/* Right: Mode Switcher, Fleet Navigation & PDF Release */}
-        <div className="flex items-center gap-2">
-          {/* Mode Selector */}
-          <div className="flex items-center p-0.5 rounded-lg bg-slate-900 border border-slate-800">
-            {(["SIM", "LIVE", "HYBRID"] as const).map((mode) => (
+        {/* Center: Flight Mode & Scenario Preset Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          {/* Pre-Flight vs Live Flight Toggle */}
+          {onFlightViewModeChange && (
+            <div className="flex items-center p-1 rounded-full bg-slate-950/60 border border-white/5 shadow-inner">
               <button
-                key={mode}
-                onClick={() => onModeChange(mode)}
-                className={`px-2.5 py-1 text-xs font-mono font-semibold rounded-md transition-colors ${
-                  currentMode === mode
-                    ? "bg-cyan-500 text-obsidian-950 shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+                onClick={() => onFlightViewModeChange("PREFLIGHT")}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  flightViewMode === "PREFLIGHT"
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                {mode}
+                Pre-Flight Release
+              </button>
+              <button
+                onClick={() => onFlightViewModeChange("INFLIGHT_HUD")}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                  flightViewMode === "INFLIGHT_HUD"
+                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                <Radio className="w-3 h-3 text-emerald-400" />
+                Live Flight 1Hz
+              </button>
+            </div>
+          )}
+
+          {/* Scenario Preset Switcher */}
+          <div className="flex items-center p-1 rounded-full bg-slate-950/60 border border-white/5">
+            <button
+              onClick={() => onSelectScenario("scenario1")}
+              className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all ${
+                activeScenarioKey === "scenario1"
+                  ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              Nominal [GO]
+            </button>
+            <button
+              onClick={() => onSelectScenario("scenario2")}
+              className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all ${
+                activeScenarioKey === "scenario2"
+                  ? "bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              Edge [AMBER]
+            </button>
+            <button
+              onClick={() => onSelectScenario("scenario3")}
+              className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all ${
+                activeScenarioKey === "scenario3"
+                  ? "bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              Severe [NO-GO]
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Master Clock, Fleet Nav & Printable Release */}
+        <div className="flex items-center gap-2.5">
+          {/* Mode Pill (LIVE / SIM) */}
+          <div className="flex items-center p-0.5 rounded-full bg-slate-950/60 border border-white/5 text-[11px] font-mono">
+            {(["SIM", "LIVE"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => onModeChange(m)}
+                className={`px-2.5 py-1 rounded-full transition ${
+                  currentMode === m
+                    ? "bg-cyan-500 text-slate-950 font-bold shadow-sm"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                {m}
               </button>
             ))}
           </div>
@@ -133,29 +148,35 @@ export const TopNav: React.FC<TopNavProps> = ({
             <button
               onClick={onRefreshLive}
               disabled={isLiveLoading}
-              title="Refresh NOAA METAR Ingestion"
-              className="p-1.5 rounded-lg bg-slate-900 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-950/40 transition"
+              title="Refresh NOAA METAR"
+              className="p-2 rounded-full bg-slate-900/60 border border-white/10 text-cyan-300 hover:bg-cyan-950/40 transition"
             >
-              <RefreshCw className={`w-4 h-4 ${isLiveLoading ? "animate-spin text-cyan-300" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isLiveLoading ? "animate-spin text-cyan-300" : ""}`} />
             </button>
           )}
 
-          {/* Fleet Link */}
+          {/* UTC Clock Badge */}
+          <div className="px-3.5 py-1 rounded-full bg-slate-950/60 border border-white/10 text-xs font-mono text-cyan-300 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            {utcTime || "00:00:00 UTC"}
+          </div>
+
+          {/* Fleet Hub Link */}
           <Link
             href="/fleet"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-mono text-slate-300 hover:text-cyan-300 transition"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900/60 border border-white/10 hover:border-cyan-400/30 text-xs font-medium text-slate-300 hover:text-cyan-300 transition"
           >
             <Layers className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Fleet</span>
+            <span className="hidden sm:inline">Fleet Hub</span>
           </Link>
 
-          {/* Dispatch Release Button */}
+          {/* Dispatch Release Document Button */}
           <button
             onClick={onOpenDispatchSheet}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/40 text-xs font-mono text-cyan-300 transition shadow-[0_0_12px_rgba(6,182,212,0.2)]"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 hover:from-cyan-500/30 hover:to-indigo-500/30 border border-cyan-400/40 text-xs font-semibold text-cyan-200 transition shadow-[0_0_15px_rgba(56,189,248,0.2)]"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span className="font-semibold">Flight Release</span>
+            <span>Flight Release</span>
           </button>
         </div>
       </div>

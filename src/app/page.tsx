@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { TopNav } from "@/components/cockpit/TopNav";
 import { VerdictHero } from "@/components/cockpit/VerdictHero";
-import { RiskMatrix } from "@/components/cockpit/RiskMatrix";
 import { TelemetryGrid } from "@/components/cockpit/TelemetryGrid";
 import { WhatIfSimulator } from "@/components/cockpit/WhatIfSimulator";
 import { AIBriefingCard } from "@/components/cockpit/AIBriefingCard";
 import { EvidenceDrawer } from "@/components/cockpit/EvidenceDrawer";
 import { AirspaceMapClient } from "@/components/map/AirspaceMapClient";
 import { DispatchSheet } from "@/components/reports/DispatchSheet";
-import { FlightModeToggle, FlightViewMode } from "@/components/cockpit/FlightModeToggle";
+import { FlightViewMode } from "@/components/cockpit/FlightModeToggle";
 import { LiveTelemetryHUD } from "@/components/cockpit/LiveTelemetryHUD";
 import { VertiportGrid } from "@/components/cockpit/VertiportGrid";
 import { BlackboxAudit } from "@/components/cockpit/BlackboxAudit";
@@ -149,7 +148,7 @@ export default function MissionCockpitPage() {
     if (isPlayingTelemetry) {
       interval = setInterval(() => {
         setFlightElapsedSec((prev) => {
-          const next = prev + 5; // advance virtual flight timeline
+          const next = prev + 5;
           const nextTelemetry = computeInFlightTelemetryFrame(mission, next, {
             speedMultiplier: 2,
             injectedWindShearKt: injectedShearKt,
@@ -157,7 +156,6 @@ export default function MissionCockpitPage() {
           });
           setLiveTelemetry(nextTelemetry);
 
-          // Stop stream if landed
           if (nextTelemetry.flightPhase === "LANDED") {
             setIsPlayingTelemetry(false);
           }
@@ -307,8 +305,8 @@ export default function MissionCockpitPage() {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-obsidian-950">
-      {/* Top Header Navigation */}
+    <div className="min-h-screen bg-[#0A0E17] text-slate-100 flex flex-col selection:bg-cyan-400 selection:text-slate-950 font-sans pb-12">
+      {/* Floating Glass Navbar */}
       <TopNav
         currentMode={currentMode}
         onModeChange={handleModeChange}
@@ -317,22 +315,26 @@ export default function MissionCockpitPage() {
         onOpenDispatchSheet={() => setIsDispatchSheetOpen(true)}
         isLiveLoading={isLiveLoading}
         onRefreshLive={handleFetchLiveWeather}
+        flightViewMode={flightViewMode}
+        onFlightViewModeChange={setFlightViewMode}
       />
 
-      {/* Main Glass Cockpit Content Grid */}
-      <main className="flex-1 w-full max-w-[1920px] px-4 sm:px-6 lg:px-8 mx-auto py-6 space-y-6">
-        {/* Mode Toggle: [PRE-FLIGHT DISPATCH] vs [ACTIVE IN-FLIGHT HUD] */}
-        <FlightModeToggle
-          viewMode={flightViewMode}
-          onViewModeChange={setFlightViewMode}
-          flightPhase={liveTelemetry.flightPhase}
-          isSimulating={isPlayingTelemetry}
-        />
+      {/* Main Luxury Glass Cockpit Grid */}
+      <main className="flex-1 w-full max-w-[1840px] px-4 sm:px-6 mx-auto mt-4 space-y-8">
+        {/* HERO SECTION: Split View (60% Vector Radar Map + 40% Executive Verdict Card) */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
+          {/* Left (60% Width) — Expansive Vector Airspace Canvas */}
+          <div className="xl:col-span-7 2xl:col-span-7 flex flex-col">
+            <AirspaceMapClient mission={mission} liveTelemetry={liveTelemetry} />
+          </div>
 
-        {/* 1. Verdict Hero Banner */}
-        <VerdictHero mission={mission} />
+          {/* Right (40% Width) — Executive Flight Verdict Card with Circular Ring Gauge */}
+          <div className="xl:col-span-5 2xl:col-span-5 flex flex-col">
+            <VerdictHero mission={mission} />
+          </div>
+        </div>
 
-        {/* In-Flight Live HUD Strip (Active when in-flight mode or playback running) */}
+        {/* 1Hz Live In-Flight HUD Strip (Active in Live Flight Mode) */}
         {flightViewMode === "INFLIGHT_HUD" && (
           <LiveTelemetryHUD
             telemetry={liveTelemetry}
@@ -346,30 +348,20 @@ export default function MissionCockpitPage() {
           />
         )}
 
-        {/* 2. Vector Airspace Radar & 5-Factor Risk Matrix (Two-Column Layout) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-7 space-y-4">
-            <AirspaceMapClient mission={mission} liveTelemetry={liveTelemetry} />
-          </div>
-          <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
-            <RiskMatrix factors={mission.risk.factors} hardGates={mission.risk.hardGates} />
-          </div>
-        </div>
-
-        {/* 3. Real-Time Telemetry Grid (Weather, Energy, Aircraft Envelope) */}
+        {/* 4 Telemetry & Physical Performance Widget Cards */}
         <TelemetryGrid mission={mission} />
 
-        {/* 4. Vertiport Pad Reservation & Fast-Charge Matrix (v2.0) */}
+        {/* Vertiport Turnaround & Fast-Charge Matrix */}
         <VertiportGrid vertiportState={mission.vertiportOps} />
 
-        {/* 5. Explainable AI Briefing Card (Gemini 2.5 Flash & Voice Radio) */}
+        {/* Gemini AI & Radio Voice Dispatch Hub */}
         <AIBriefingCard
           mission={mission}
           onRegenerateBriefing={handleRegenerateAIBriefing}
           isLoading={isAiLoading}
         />
 
-        {/* 6. Aerodynamic "What-If" Telemetry Simulator */}
+        {/* Modern "What-If" Performance Studio */}
         <WhatIfSimulator
           params={whatIfParams}
           onChange={handleWhatIfChange}
@@ -378,10 +370,10 @@ export default function MissionCockpitPage() {
           maxCrosswindKts={mission.aircraft.maxCrosswindKts}
         />
 
-        {/* 7. DO-178C Cryptographic Blackbox Audit Ledger (v2.0) */}
+        {/* DO-178C Cryptographic Blackbox Audit Ledger */}
         <BlackboxAudit ledger={mission.blackboxLedger} />
 
-        {/* 8. Traceable Evidence Audit Drawer */}
+        {/* Traceable Evidence Audit Drawer */}
         <EvidenceDrawer evidence={mission.evidence} />
       </main>
 
@@ -392,11 +384,15 @@ export default function MissionCockpitPage() {
         onClose={() => setIsDispatchSheetOpen(false)}
       />
 
-      {/* Cockpit Footer */}
-      <footer className="border-t border-slate-900 bg-obsidian-950/80 py-4 px-6 text-center text-xs font-mono text-slate-500">
-        <p>
-          AeroOps AI v2.0 (Enterprise Fleet & In-Flight OS) • Deterministic Rules Safety Engine, 1Hz Live Telemetry & SHA-256 Merkle Ledger
-        </p>
+      {/* Luxury Editorial Footer */}
+      <footer className="w-full max-w-[1840px] mx-auto px-6 mt-12 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 font-sans gap-3">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-slate-300">AeroOps AI</span>
+          <span>• Luxury Aero-Editorial Edition</span>
+        </div>
+        <div className="font-mono text-[11px] text-slate-400">
+          Deterministic Safety Physics Engine • Google Gemini 2.5 Flash • SHA-256 DO-178C Ledger
+        </div>
       </footer>
     </div>
   );
