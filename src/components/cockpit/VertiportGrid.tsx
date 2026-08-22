@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { VertiportTurnaroundState } from "@/types/aviation";
 import { BatteryCharging, Clock, Lock, Zap } from "lucide-react";
 
@@ -9,6 +9,12 @@ interface VertiportGridProps {
 }
 
 export const VertiportGrid: React.FC<VertiportGridProps> = ({ vertiportState }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!vertiportState) return null;
 
   return (
@@ -94,9 +100,14 @@ export const VertiportGrid: React.FC<VertiportGridProps> = ({ vertiportState }) 
               </div>
 
               <div className="mt-4 pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-slate-400">
-                <span className="flex items-center gap-1.5">
+                <span
+                  suppressHydrationWarning={true}
+                  className="flex items-center gap-1.5"
+                >
                   <Clock className="w-3 h-3 text-slate-500" />
-                  {pad.estimatedClearTimeUtc}
+                  <span suppressHydrationWarning={true}>
+                    {mounted ? pad.estimatedClearTimeUtc : "UTC (LOCKED)"}
+                  </span>
                 </span>
                 {isReservedForUs && (
                   <span className="text-cyan-300 font-bold flex items-center gap-1">

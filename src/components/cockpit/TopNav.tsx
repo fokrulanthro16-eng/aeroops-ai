@@ -29,8 +29,10 @@ export const TopNav: React.FC<TopNavProps> = ({
   onFlightViewModeChange,
 }) => {
   const [utcTime, setUtcTime] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const updateTime = () => {
       const now = new Date();
       setUtcTime(now.toISOString().substring(11, 19) + " UTC");
@@ -155,10 +157,15 @@ export const TopNav: React.FC<TopNavProps> = ({
             </button>
           )}
 
-          {/* UTC Clock Badge */}
-          <div className="px-3.5 py-1 rounded-full bg-slate-950/60 border border-white/10 text-xs font-mono text-cyan-300 flex items-center gap-1.5">
+          {/* UTC Clock Badge with suppressHydrationWarning */}
+          <div
+            suppressHydrationWarning={true}
+            className="px-3.5 py-1 rounded-full bg-slate-950/60 border border-white/10 text-xs font-mono text-cyan-300 flex items-center gap-1.5"
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            {utcTime || "00:00:00 UTC"}
+            <span suppressHydrationWarning={true}>
+              {mounted && utcTime ? utcTime : "00:00:00 UTC"}
+            </span>
           </div>
 
           {/* Fleet Hub Link */}

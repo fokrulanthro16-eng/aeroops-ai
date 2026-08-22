@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MerkleAuditLedger } from "@/types/aviation";
 import { Lock, ChevronDown, ChevronUp, Hash, CheckCircle } from "lucide-react";
 import { verifyLedgerIntegrity } from "@/lib/blackbox-crypto";
@@ -11,6 +11,11 @@ interface BlackboxAuditProps {
 
 export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!ledger) return null;
 
@@ -67,7 +72,9 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
                   <Hash className="w-3.5 h-3.5 text-cyan-400" />
                   BLOCK #{block.blockIndex}: {block.eventType}
                 </span>
-                <span className="text-[10px] text-slate-500">{block.isoTimestamp}</span>
+                <span suppressHydrationWarning={true} className="text-[10px] text-slate-500">
+                  {mounted ? block.isoTimestamp : "ISO UTC TIMESTAMP"}
+                </span>
               </div>
 
               <p className="text-slate-300 font-sans text-xs leading-relaxed">{block.eventPayload}</p>
