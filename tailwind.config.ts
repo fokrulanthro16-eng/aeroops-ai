@@ -10,13 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        obsidian: {
-          950: "#05070B",
-          900: "#080A0F",
-          800: "#0A0E17",
-          700: "#0F141C",
-          600: "#171F2C",
-        },
+        obsidian: "#0A0E17",
       },
     },
   },

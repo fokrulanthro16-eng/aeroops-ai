@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #0A0E17;
-  color: #F1F5F9;
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background-color: #0A0E17 !important;
+  color: #F8FAFC;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 /* Vista Voyage Luxury Glassmorphism */
