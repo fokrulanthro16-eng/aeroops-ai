@@ -1,6 +1,6 @@
 <div align="center">
 
-# ✈️ AeroOps AI v2.0
+# âœˆï¸ AeroOps AI v2.0
 ### Autonomous Flight Readiness & In-Flight Fleet Risk Intelligence Platform
 **Engineered for Advanced Air Mobility (eVTOL) & BVLOS Drone Fleet Operations**
 
@@ -19,13 +19,13 @@
 
 ---
 
-## 📸 Cockpit Showcase & Operational Visuals
+## ðŸ“¸ Cockpit Showcase & Operational Visuals
 
 ### 1. Pre-Flight Readiness Cockpit & 60/40 Vector Radar Split View
 *High-resolution glassmorphic operations console displaying 5-factor safety gates, vector corridors, and dynamic Point of No Return (PONR) calculation.*
 
 <div align="center">
-  <img src="docs/screenshots/hero-cockpit-dispatch.svg" alt="AeroOps AI Pre-Flight Cockpit" width="100%" />
+  <img src="./docs/screenshots/hero-cockpit-dispatch.svg" alt="AeroOps AI Pre-Flight Cockpit" width="100%" />
 </div>
 
 ---
@@ -34,7 +34,7 @@
 *Real-time 1Hz avionics streaming, live battery thermal modeling, anomaly injectors (Wind Shear / Battery Decay), and automated Burbank alternate vertiport diversion.*
 
 <div align="center">
-  <img src="docs/screenshots/inflight-telemetry-hud.svg" alt="AeroOps AI In-Flight Telemetry HUD" width="100%" />
+  <img src="./docs/screenshots/inflight-telemetry-hud.svg" alt="AeroOps AI In-Flight Telemetry HUD" width="100%" />
 </div>
 
 ---
@@ -43,12 +43,12 @@
 *SHA-256 Merkle-Chain flight record ledger generating tamper-evident operational blocks for regulatory authorities and insurance underwriters.*
 
 <div align="center">
-  <img src="docs/screenshots/cryptographic-audit-ledger.svg" alt="AeroOps AI Blackbox Audit Ledger" width="100%" />
+  <img src="./docs/screenshots/cryptographic-audit-ledger.svg" alt="AeroOps AI Blackbox Audit Ledger" width="100%" />
 </div>
 
 ---
 
-## 🧭 Core Philosophy: *"Rules Engine Decides, AI Explains"*
+## ðŸ§­ Core Philosophy: *"Rules Engine Decides, AI Explains"*
 
 In safety-critical aviation (**DO-178C / FAA Part 135 / EASA SC-VTOL**), probabilistic GenAI models must **never** be single points of failure for flight-critical go/no-go clearances. 
 
@@ -58,7 +58,7 @@ AeroOps AI enforces a strict, robust architectural boundary:
 
 ---
 
-## 🏛️ System Architecture
+## ðŸ›ï¸ System Architecture
 
 ```mermaid
 graph TD
@@ -98,7 +98,7 @@ graph TD
 
 ---
 
-## ⚡ Key Capabilities & Technical Highlights
+## âš¡ Key Capabilities & Technical Highlights
 
 ### 1. Dual-Mode Operational Cockpit
 - **Pre-Flight Readiness Dispatch:** 5-factor risk scoring with instant safety interlock checklists and tactile What-If aerodynamic performance sliders.
@@ -122,16 +122,16 @@ $$\text{Hash}_n = \text{SHA256}(\text{Hash}_{n-1} + \text{Timestamp} + \text{Tel
 
 ---
 
-## 🧪 Rigorous Verification & Test Matrix
+## ðŸ§ª Rigorous Verification & Test Matrix
 
-- ✔ **Unit & Physics Tests:** `39 / 39 PASSED` (0 failures)
-- ✔ **End-to-End Integration:** `16 / 16 PASSED` (0 errors)
-- ✔ **TypeScript Static Check:** `0 errors / 100% Type-Safe`
-- ✔ **Production Compilation:** `Next.js 14 (HTTP 200 OK)`
+- âœ” **Unit & Physics Tests:** `39 / 39 PASSED` (0 failures)
+- âœ” **End-to-End Integration:** `16 / 16 PASSED` (0 errors)
+- âœ” **TypeScript Static Check:** `0 errors / 100% Type-Safe`
+- âœ” **Production Compilation:** `Next.js 14 (HTTP 200 OK)`
 
 ---
 
-## 🚀 Quickstart & Local Setup
+## ðŸš€ Quickstart & Local Setup
 
 ```bash
 # 1. Clone the repository
@@ -156,6 +156,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ---
 
-## 📜 License
+## ðŸ“œ License
 
 Distributed under the MIT License. See `LICENSE` for more information.

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" style="background:#0A0E17; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <radialGradient id="bgGlow" cx="20%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="rgba(56, 189, 248, 0.12)" />
+      <stop offset="60%" stop-color="rgba(99, 102, 241, 0.05)" />
+      <stop offset="100%" stop-color="rgba(10, 14, 23, 1)" />
+    </radialGradient>
+    <linearGradient id="corridorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#bgGlow)" />
+
+  <!-- Top Floating Pill Navbar -->
+  <rect x="40" y="24" width="1120" height="56" rx="28" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+  <circle cx="70" cy="52" r="16" fill="rgba(56, 189, 248, 0.2)" stroke="#38BDF8" stroke-width="1" />
+  <text x="64" y="57" fill="#38BDF8" font-size="14" font-weight="bold">✈</text>
+  <text x="96" y="57" fill="#FFFFFF" font-size="16" font-weight="bold">AeroOps<tspan fill="#38BDF8">AI</tspan></text>
+  <rect x="185" y="42" width="130" height="20" rx="10" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.3)" />
+  <text x="195" y="56" fill="#38BDF8" font-size="10" font-family="monospace">AERO-EDITORIAL OS</text>
+
+  <!-- Center Mode Pills -->
+  <rect x="480" y="34" width="240" height="36" rx="18" fill="rgba(2, 6, 23, 0.8)" stroke="rgba(255,255,255,0.08)" />
+  <rect x="484" y="38" width="115" height="28" rx="14" fill="rgba(56,189,248,0.2)" stroke="rgba(56,189,248,0.4)" />
+  <text x="500" y="56" fill="#38BDF8" font-size="11" font-weight="bold">Pre-Flight [GO]</text>
+  <text x="615" y="56" fill="#94A3B8" font-size="11">Live In-Flight</text>
+
+  <!-- Right Pill Badges -->
+  <rect x="940" y="38" width="105" height="28" rx="14" fill="rgba(2, 6, 23, 0.8)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="955" cy="52" r="3" fill="#38BDF8" />
+  <text x="966" y="56" fill="#38BDF8" font-size="11" font-family="monospace">15:45:00 UTC</text>
+  <rect x="1055" y="38" width="90" height="28" rx="14" fill="rgba(56,189,248,0.15)" stroke="rgba(56,189,248,0.3)" />
+  <text x="1068" y="56" fill="#7DD3FC" font-size="11" font-weight="bold">Flight Release</text>
+
+  <!-- Split View Grid -->
+  <!-- Left (60%): Vector Airspace Radar Card -->
+  <rect x="40" y="100" width="670" height="380" rx="24" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <rect x="56" y="116" width="260" height="26" rx="13" fill="rgba(2, 6, 23, 0.8)" stroke="rgba(255,255,255,0.08)" />
+  <circle cx="70" cy="129" r="4" fill="#38BDF8" />
+  <text x="82" y="133" fill="#38BDF8" font-size="11" font-family="monospace" font-weight="bold">VECTOR AIRSPACE & PONR RADAR</text>
+
+  <!-- Concentric Rings & Vector Path -->
+  <circle cx="160" cy="300" r="100" fill="none" stroke="rgba(56, 189, 248, 0.08)" stroke-width="1" stroke-dasharray="4 4" />
+  <circle cx="160" cy="300" r="200" fill="none" stroke="rgba(56, 189, 248, 0.05)" stroke-width="1" stroke-dasharray="4 4" />
+  
+  <line x1="160" y1="300" x2="560" y2="220" stroke="rgba(56, 189, 248, 0.15)" stroke-width="16" stroke-linecap="round" />
+  <line x1="160" y1="300" x2="560" y2="220" stroke="url(#corridorGrad)" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Waypoints -->
+  <circle cx="160" cy="300" r="7" fill="#10B981" stroke="#FFFFFF" stroke-width="2" />
+  <rect x="125" y="315" width="70" height="18" rx="9" fill="#0A0E17" stroke="#10B981" stroke-width="1" />
+  <text x="160" y="327" fill="#10B981" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">DEP: KLAX</text>
+
+  <circle cx="390" cy="254" r="5" fill="#F59E0B" stroke="#0A0E17" stroke-width="2" />
+  <rect x="345" y="222" width="90" height="18" rx="9" fill="#0A0E17" stroke="#F59E0B" stroke-width="1" />
+  <text x="390" y="234" fill="#F59E0B" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">PONR: 28.4km</text>
+
+  <circle cx="560" cy="220" r="7" fill="#38BDF8" stroke="#FFFFFF" stroke-width="2" />
+  <rect x="525" y="235" width="70" height="18" rx="9" fill="#0A0E17" stroke="#38BDF8" stroke-width="1" />
+  <text x="560" y="247" fill="#38BDF8" font-size="9" font-family="monospace" font-weight="bold" text-anchor="middle">ARR: KBUR</text>
+
+  <!-- Right (40%): Executive Flight Verdict Card -->
+  <rect x="730" y="100" width="430" height="380" rx="24" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+  <text x="756" y="136" fill="#FFFFFF" font-size="16" font-weight="bold">AERO-101-NOMINAL</text>
+  <text x="756" y="154" fill="#94A3B8" font-size="11" font-family="monospace">Joby S4 eVTOL • KLAX → KBUR (38.5 km)</text>
+
+  <rect x="980" y="122" width="160" height="32" rx="16" fill="rgba(16, 185, 129, 0.15)" stroke="rgba(16, 185, 129, 0.3)" />
+  <circle cx="996" cy="138" r="4" fill="#10B981" />
+  <text x="1008" y="142" fill="#10B981" font-size="11" font-weight="bold">MISSION RELEASE: GO</text>
+
+  <!-- Circular Risk Ring -->
+  <circle cx="820" cy="230" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8" />
+  <circle cx="820" cy="230" r="42" fill="none" stroke="#10B981" stroke-width="8" stroke-dasharray="264" stroke-dashoffset="210" stroke-linecap="round" />
+  <text x="820" y="232" fill="#10B981" font-size="22" font-weight="900" font-family="monospace" text-anchor="middle">18</text>
+  <text x="820" y="246" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">RISK SCORE</text>
+
+  <rect x="880" y="195" width="260" height="70" rx="16" fill="rgba(2, 6, 23, 0.5)" stroke="rgba(255,255,255,0.05)" />
+  <text x="894" y="216" fill="#38BDF8" font-size="10" font-family="monospace" font-weight="bold">DETERMINISTIC ASSESSMENT:</text>
+  <text x="894" y="234" fill="#E2E8F0" font-size="11">All 5 deterministic safety gates clear.</text>
+  <text x="894" y="250" fill="#94A3B8" font-size="10">Atmospheric, reserve, and MTOW nominal.</text>
+
+  <!-- 5 Gate Checklist Badges -->
+  <g transform="translate(756, 290)">
+    <rect x="0" y="0" width="185" height="34" rx="10" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="12" y="21" fill="#10B981" font-size="11" font-weight="bold">✓ GATE-01: MTOW Clearance</text>
+
+    <rect x="195" y="0" width="185" height="34" rx="10" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="207" y="21" fill="#10B981" font-size="11" font-weight="bold">✓ GATE-02: Battery Reserve</text>
+
+    <rect x="0" y="42" width="185" height="34" rx="10" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="12" y="63" fill="#10B981" font-size="11" font-weight="bold">✓ GATE-03: Airspace Segregation</text>
+
+    <rect x="195" y="42" width="185" height="34" rx="10" fill="rgba(2,6,23,0.6)" stroke="rgba(255,255,255,0.06)" />
+    <text x="207" y="63" fill="#10B981" font-size="11" font-weight="bold">✓ GATE-04: Crosswind Envelope</text>
+  </g>
+
+  <!-- Bottom 4 Telemetry Cards Preview -->
+  <g transform="translate(40, 500)">
+    <rect x="0" y="0" width="265" height="150" rx="20" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" />
+    <text x="20" y="28" fill="#FFFFFF" font-size="12" font-weight="bold">Atmospheric &amp; Wind</text>
+    <text x="20" y="58" fill="#38BDF8" font-size="20" font-weight="bold" font-family="monospace">14 kt @ 240°</text>
+    <text x="20" y="78" fill="#94A3B8" font-size="11">Crosswind: 4.8 kt (Max 22 kt)</text>
+    <text x="20" y="125" fill="#10B981" font-size="10" font-family="monospace">METAR KLAX 10SM CLR</text>
+
+    <rect x="285" y="0" width="265" height="150" rx="20" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" />
+    <text x="305" y="28" fill="#FFFFFF" font-size="12" font-weight="bold">Energy &amp; Dynamic PONR</text>
+    <text x="305" y="58" fill="#10B981" font-size="20" font-weight="bold" font-family="monospace">74.2% Reserve</text>
+    <text x="305" y="78" fill="#94A3B8" font-size="11">PONR: 28.4 km / 38.5 km</text>
+    <text x="305" y="125" fill="#38BDF8" font-size="10" font-family="monospace">Pack: 180 kWh | Draw: 38 kWh</text>
+
+    <rect x="570" y="0" width="265" height="150" rx="20" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" />
+    <text x="590" y="28" fill="#FFFFFF" font-size="12" font-weight="bold">Airspace &amp; NOTAMs</text>
+    <text x="590" y="58" fill="#10B981" font-size="20" font-weight="bold" font-family="monospace">UNRESTRICTED</text>
+    <text x="590" y="78" fill="#94A3B8" font-size="11">Corridor: Class-G Clear</text>
+    <text x="590" y="125" fill="#7DD3FC" font-size="10" font-family="monospace">Nearest Alternate: KBUR (12 NM)</text>
+
+    <rect x="855" y="0" width="265" height="150" rx="20" fill="rgba(15, 23, 42, 0.65)" stroke="rgba(255,255,255,0.08)" />
+    <text x="875" y="28" fill="#FFFFFF" font-size="12" font-weight="bold">Weight &amp; Balance</text>
+    <text x="875" y="58" fill="#38BDF8" font-size="20" font-weight="bold" font-family="monospace">1,890 / 2,450 kg</text>
+    <text x="875" y="78" fill="#94A3B8" font-size="11">Payload: 240 kg (4 Pax)</text>
+    <text x="875" y="125" fill="#10B981" font-size="10" font-family="monospace">Envelope: Nominal Trim</text>
+  </g>
+</svg>
