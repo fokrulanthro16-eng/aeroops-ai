@@ -213,7 +213,7 @@ export default function MissionCockpitPage() {
       />
 
       {/* Main Glass Cockpit Content Grid */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+      <main className="flex-1 w-full max-w-[1920px] px-4 sm:px-6 lg:px-8 mx-auto py-6 space-y-6">
         {/* 1. Verdict Hero Banner */}
         <VerdictHero mission={mission} />
 

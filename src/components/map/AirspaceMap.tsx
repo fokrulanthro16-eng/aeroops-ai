@@ -49,7 +49,7 @@ export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
   const hasActiveTfr = airspaceConflicts.some((c) => c.type === "TFR" || c.status === "RESTRICTION_CONFLICT");
 
   return (
-    <div className="relative rounded-xl bg-obsidian-950 border border-slate-800 overflow-hidden flex flex-col h-[520px]">
+    <div className="relative rounded-xl bg-obsidian-950 border border-slate-800 overflow-hidden flex flex-col h-[520px] 2xl:h-[580px]">
       {/* Top Map HUD Bar */}
       <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         <div className="flex items-center gap-2 p-1.5 px-3 rounded-lg bg-obsidian-900/90 border border-slate-800 text-xs font-mono text-cyan-300 pointer-events-auto backdrop-blur-md shadow-lg">

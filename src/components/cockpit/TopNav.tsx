@@ -37,7 +37,7 @@ export const TopNav: React.FC<TopNavProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-obsidian-950/80 backdrop-blur-xl px-4 lg:px-8 py-3">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Brand & Glass Cockpit Logo */}
         <div className="flex items-center gap-3">
           <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-slate-900 border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
