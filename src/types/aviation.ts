@@ -146,6 +146,107 @@ export interface AIBriefingPayload {
   model_used?: string;
 }
 
+// -------------------------------------------------------------
+// V2.0 EXTENSIONS: IN-FLIGHT OS, MICRO-WEATHER, CRYPTO & VERTIPORT OPS
+// -------------------------------------------------------------
+
+export type FlightPhase =
+  | "PRE_DEPARTURE"
+  | "CLIMB"
+  | "CRUISE"
+  | "DIVERTING"
+  | "DESCENT"
+  | "LANDED";
+
+export interface InFlightTelemetry {
+  timestamp: number;
+  flightPhase: FlightPhase;
+  distanceFlownKm: number;
+  distanceRemainingKm: number;
+  currentAltitudeFt: number;
+  currentAirspeedKts: number;
+  currentGroundSpeedKts: number;
+  liveBatterySoc: number;
+  theoreticalSoc: number;
+  batteryCellTempC: number;
+  instantaneousPowerKw: number;
+  headwindDriftKt: number;
+  crosswindDriftKt: number;
+  inFlightPonrKm: number;
+  isPastPonr: boolean;
+  recommendedAction:
+    | "CONTINUE_NOMINAL"
+    | "HOLD"
+    | "DIVERT_TO_ALTERNATE"
+    | "EMERGENCY_LANDING";
+  diversionTargetIcao?: string;
+  diversionReason?: string;
+  distanceToAlternateNm?: number;
+  currentCoordinates: {
+    lat: number;
+    lon: number;
+  };
+}
+
+export interface MicroWeatherSegment {
+  segmentId: string;
+  name: string;
+  startKm: number;
+  endKm: number;
+  baseWindKt: number;
+  canyonNarrowingFactor: number;
+  buildingHeightRatio: number;
+  amplifiedWindKt: number;
+  turbulenceLevel: "LOW" | "MODERATE" | "SEVERE";
+  hasVenturiAlert: boolean;
+}
+
+export interface VertiportPadSlot {
+  padId: string;
+  padName: string;
+  status: "AVAILABLE" | "RESERVED" | "OCCUPIED";
+  assignedCallsign?: string;
+  chargerPowerKw: number;
+  currentSocTargetPercent?: number;
+  turnaroundTimerSec: number;
+  estimatedClearTimeUtc: string;
+}
+
+export interface VertiportTurnaroundState {
+  vertiportIcao: string;
+  name: string;
+  totalPads: number;
+  availablePads: number;
+  pads: VertiportPadSlot[];
+  lockedSlotPadId?: string;
+}
+
+export interface BlackboxBlock {
+  blockIndex: number;
+  timestamp: number;
+  isoTimestamp: string;
+  eventType:
+    | "PREFLIGHT_DISPATCH"
+    | "TAKEOFF_INITIALIZATION"
+    | "TELEMETRY_FRAME"
+    | "PONR_CROSSING"
+    | "WIND_SHEAR_ALERT"
+    | "INFLIGHT_DIVERSION_TRIGGER"
+    | "TOUCHDOWN_CLEARANCE";
+  eventPayload: string;
+  verdict: string;
+  previousHash: string;
+  blockHash: string;
+}
+
+export interface MerkleAuditLedger {
+  rootHash: string;
+  blockCount: number;
+  isTamperProof: boolean;
+  lastVerifiedIso: string;
+  blocks: BlackboxBlock[];
+}
+
 export interface FlightMission {
   id: string;
   callsign: string;
@@ -164,4 +265,9 @@ export interface FlightMission {
   risk: RiskAssessment;
   evidence: EvidenceAuditItem[];
   aiBriefing?: AIBriefingPayload;
+
+  // v2.0 Extensions
+  microWeatherSegments?: MicroWeatherSegment[];
+  vertiportOps?: VertiportTurnaroundState;
+  blackboxLedger?: MerkleAuditLedger;
 }

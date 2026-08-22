@@ -1,22 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { FlightMission } from "@/types/aviation";
+import { FlightMission, InFlightTelemetry } from "@/types/aviation";
 import { SAMPLE_AIRSPACE_ZONES } from "@/lib/airspace";
-import { MapPin, Navigation, Wind, ShieldAlert, Layers, Compass, Eye } from "lucide-react";
+import { DynamicRerouteLayer } from "./DynamicRerouteLayer";
 
 interface AirspaceMapProps {
   mission: FlightMission;
+  liveTelemetry?: InFlightTelemetry;
 }
 
-export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
+export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission, liveTelemetry }) => {
   const [showAirspaceRings, setShowAirspaceRings] = useState(true);
   const [showWindVectors, setShowWindVectors] = useState(true);
 
-  const { origin, destination, energy, wind, airspaceConflicts, routeDistanceKm } = mission;
+  const { origin, destination, energy, wind, airspaceConflicts, routeDistanceKm, microWeatherSegments } = mission;
 
   // ViewBox coordinates for Southern California Vertiport corridor
-  // Map bounds: Lat ~ 33.5 to 34.4, Lon ~ -118.6 to -117.7
   const minLat = 33.55;
   const maxLat = 34.35;
   const minLon = -118.65;
@@ -24,26 +24,19 @@ export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
 
   const projectCoord = (lat: number, lon: number): { x: number; y: number } => {
     const x = ((lon - minLon) / (maxLon - minLon)) * 800;
-    // Invert Y because SVG y=0 is top
     const y = ((maxLat - lat) / (maxLat - minLat)) * 500;
     return { x, y };
   };
 
   const originPt = projectCoord(origin.lat, origin.lon);
   const destPt = projectCoord(destination.lat, destination.lon);
+  const altPt = projectCoord(34.2007, -118.3587); // KBUR Alternate
 
   // PONR point along the flight path
   const ponrRatio = Math.min(1, Math.max(0, energy.pointOfNoReturnKm / Math.max(1, routeDistanceKm)));
   const ponrPt = {
     x: originPt.x + (destPt.x - originPt.x) * ponrRatio,
     y: originPt.y + (destPt.y - originPt.y) * ponrRatio,
-  };
-
-  // Aircraft current position simulation (outbound ~ 35%)
-  const simAircraftRatio = 0.35;
-  const aircraftPt = {
-    x: originPt.x + (destPt.x - originPt.x) * simAircraftRatio,
-    y: originPt.y + (destPt.y - originPt.y) * simAircraftRatio,
   };
 
   const hasActiveTfr = airspaceConflicts.some((c) => c.type === "TFR" || c.status === "RESTRICTION_CONFLICT");
@@ -249,6 +242,16 @@ export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
             </text>
           </g>
 
+          {/* Dynamic Reroute & Micro-Weather In-Flight Layer */}
+          <DynamicRerouteLayer
+            telemetry={liveTelemetry}
+            microWeatherSegments={microWeatherSegments}
+            originPt={originPt}
+            destPt={destPt}
+            alternatePt={altPt}
+            isDiverting={liveTelemetry?.flightPhase === "DIVERTING"}
+          />
+
           {/* Origin Vertiport Node */}
           <g transform={`translate(${originPt.x}, ${originPt.y})`}>
             <circle r="7" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
@@ -265,16 +268,6 @@ export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
             <text x="0" y="24" fill="#22D3EE" fontSize="10" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
               ARR: {destination.icao}
             </text>
-          </g>
-
-          {/* Animated Airborne Aircraft Symbol */}
-          <g transform={`translate(${aircraftPt.x}, ${aircraftPt.y})`}>
-            <circle r="12" fill="none" stroke="#22D3EE" strokeWidth="1.5" strokeDasharray="3 3" />
-            <polygon
-              points="0,-8 6,8 0,4 -6,8"
-              fill="#22D3EE"
-              transform={`rotate(${mission.routeHeadingDeg})`}
-            />
           </g>
         </svg>
       </div>
@@ -293,7 +286,7 @@ export const AirspaceMap: React.FC<AirspaceMapProps> = ({ mission }) => {
           </span>
           {hasActiveTfr && (
             <span className="flex items-center gap-1.5 text-red-400 font-bold">
-              <ShieldAlert className="w-3.5 h-3.5" /> VIP TFR Alert
+              ⚠️ VIP TFR Alert
             </span>
           )}
         </div>

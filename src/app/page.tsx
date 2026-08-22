@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { TopNav } from "@/components/cockpit/TopNav";
 import { VerdictHero } from "@/components/cockpit/VerdictHero";
 import { RiskMatrix } from "@/components/cockpit/RiskMatrix";
@@ -10,12 +10,21 @@ import { AIBriefingCard } from "@/components/cockpit/AIBriefingCard";
 import { EvidenceDrawer } from "@/components/cockpit/EvidenceDrawer";
 import { AirspaceMapClient } from "@/components/map/AirspaceMapClient";
 import { DispatchSheet } from "@/components/reports/DispatchSheet";
+import { FlightModeToggle, FlightViewMode } from "@/components/cockpit/FlightModeToggle";
+import { LiveTelemetryHUD } from "@/components/cockpit/LiveTelemetryHUD";
+import { VertiportGrid } from "@/components/cockpit/VertiportGrid";
+import { BlackboxAudit } from "@/components/cockpit/BlackboxAudit";
 import { PRESET_SCENARIOS, buildScenario1Nominal, buildScenario2Amber, buildScenario3Severe } from "@/lib/simulation/scenarios";
 import { decomposeWindVector, fetchLiveMetar } from "@/lib/weather";
 import { calculateEnergyAndPONR } from "@/lib/energy";
 import { evaluateAirspaceConflicts } from "@/lib/airspace";
 import { compileEvidenceAudit, evaluateMissionRisk } from "@/lib/risk";
-import { FlightMission, WeatherData } from "@/types/aviation";
+import { computeInFlightTelemetryFrame } from "@/lib/telemetry-stream";
+import { generateCorridorMicroWeatherSegments } from "@/lib/micro-weather";
+import { reserveVertiportArrivalSlot } from "@/lib/vertiport-ops";
+import { initializeMissionBlackboxLedger } from "@/lib/blackbox-crypto";
+import { FlightMission, InFlightTelemetry, WeatherData } from "@/types/aviation";
+import { pilotVoice } from "@/lib/tts";
 
 export default function MissionCockpitPage() {
   const [mission, setMission] = useState<FlightMission>(PRESET_SCENARIOS.scenario1);
@@ -24,6 +33,18 @@ export default function MissionCockpitPage() {
   const [isLiveLoading, setIsLiveLoading] = useState(false);
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isDispatchSheetOpen, setIsDispatchSheetOpen] = useState(false);
+
+  // v2.0 In-Flight HUD & Live Telemetry State
+  const [flightViewMode, setFlightViewMode] = useState<FlightViewMode>("PREFLIGHT");
+  const [flightElapsedSec, setFlightElapsedSec] = useState(0);
+  const [isPlayingTelemetry, setIsPlayingTelemetry] = useState(false);
+  const [injectedShearKt, setInjectedShearKt] = useState(0);
+  const [injectedSocDegradePercent, setInjectedSocDegradePercent] = useState(0);
+
+  // Live 1Hz In-Flight Telemetry Object
+  const [liveTelemetry, setLiveTelemetry] = useState<InFlightTelemetry>(() =>
+    computeInFlightTelemetryFrame(PRESET_SCENARIOS.scenario1, 0)
+  );
 
   // What-If Parameters
   const [whatIfParams, setWhatIfParams] = useState({
@@ -88,7 +109,7 @@ export default function MissionCockpitPage() {
         updatedAirspace
       );
 
-      const newMission: FlightMission = {
+      const baseUpdated: FlightMission = {
         ...currentMission,
         plannedPayloadKg: params.payloadKg,
         initialSocPercent: params.initialSocPercent,
@@ -101,10 +122,53 @@ export default function MissionCockpitPage() {
         evidence: updatedEvidence,
       };
 
+      // v2.0 Subsystem Extensions
+      const microWeatherSegments = generateCorridorMicroWeatherSegments(baseUpdated);
+      const { state: vertiportOps } = reserveVertiportArrivalSlot(
+        baseUpdated.destination.icao,
+        baseUpdated.callsign,
+        baseUpdated.energy.estimatedFlightTimeMin
+      );
+      const blackboxLedger = initializeMissionBlackboxLedger(baseUpdated);
+
+      const newMission: FlightMission = {
+        ...baseUpdated,
+        microWeatherSegments,
+        vertiportOps,
+        blackboxLedger,
+      };
+
       setMission(newMission);
     },
     []
   );
+
+  // 1Hz In-Flight Telemetry Timer Effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isPlayingTelemetry) {
+      interval = setInterval(() => {
+        setFlightElapsedSec((prev) => {
+          const next = prev + 5; // advance virtual flight timeline
+          const nextTelemetry = computeInFlightTelemetryFrame(mission, next, {
+            speedMultiplier: 2,
+            injectedWindShearKt: injectedShearKt,
+            injectedSocDegradationPercent: injectedSocDegradePercent,
+          });
+          setLiveTelemetry(nextTelemetry);
+
+          // Stop stream if landed
+          if (nextTelemetry.flightPhase === "LANDED") {
+            setIsPlayingTelemetry(false);
+          }
+          return next;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlayingTelemetry, mission, injectedShearKt, injectedSocDegradePercent]);
 
   const handleWhatIfChange = (updated: Partial<typeof whatIfParams>) => {
     const nextParams = { ...whatIfParams, ...updated };
@@ -137,12 +201,55 @@ export default function MissionCockpitPage() {
     });
 
     setMission(selected);
+    setFlightElapsedSec(0);
+    setInjectedShearKt(0);
+    setInjectedSocDegradePercent(0);
+    setLiveTelemetry(computeInFlightTelemetryFrame(selected, 0));
   };
 
   const handleResetWhatIf = () => {
     if (activeScenarioKey === "scenario2") handleSelectScenario("scenario2");
     else if (activeScenarioKey === "scenario3") handleSelectScenario("scenario3");
     else handleSelectScenario("scenario1");
+  };
+
+  // In-Flight Anomaly Injections
+  const handleInjectWindShear = () => {
+    const newShear = injectedShearKt > 0 ? 0 : 32;
+    setInjectedShearKt(newShear);
+    const updated = computeInFlightTelemetryFrame(mission, flightElapsedSec, {
+      speedMultiplier: 2,
+      injectedWindShearKt: newShear,
+      injectedSocDegradationPercent: injectedSocDegradePercent,
+    });
+    setLiveTelemetry(updated);
+
+    if (newShear > 0) {
+      pilotVoice.speak("Caution. Severe wind shear of 32 knots detected past Point of No Return. Autonomous diversion vector to Burbank Vertiport initiated.");
+    }
+  };
+
+  const handleInjectBatteryDegrade = () => {
+    const newDegrade = injectedSocDegradePercent > 0 ? 0 : 8;
+    setInjectedSocDegradePercent(newDegrade);
+    const updated = computeInFlightTelemetryFrame(mission, flightElapsedSec, {
+      speedMultiplier: 2,
+      injectedWindShearKt: injectedShearKt,
+      injectedSocDegradationPercent: newDegrade,
+    });
+    setLiveTelemetry(updated);
+
+    if (newDegrade > 0) {
+      pilotVoice.speak("Alert. Battery state-of-charge decay anomaly. 8 percent deficit below theoretical burn curve. Diverting to alternate vertiport.");
+    }
+  };
+
+  const handleResetFlightPlayback = () => {
+    setFlightElapsedSec(0);
+    setIsPlayingTelemetry(false);
+    setInjectedShearKt(0);
+    setInjectedSocDegradePercent(0);
+    setLiveTelemetry(computeInFlightTelemetryFrame(mission, 0));
   };
 
   // Live NOAA METAR Ingestion handler
@@ -214,13 +321,35 @@ export default function MissionCockpitPage() {
 
       {/* Main Glass Cockpit Content Grid */}
       <main className="flex-1 w-full max-w-[1920px] px-4 sm:px-6 lg:px-8 mx-auto py-6 space-y-6">
+        {/* Mode Toggle: [PRE-FLIGHT DISPATCH] vs [ACTIVE IN-FLIGHT HUD] */}
+        <FlightModeToggle
+          viewMode={flightViewMode}
+          onViewModeChange={setFlightViewMode}
+          flightPhase={liveTelemetry.flightPhase}
+          isSimulating={isPlayingTelemetry}
+        />
+
         {/* 1. Verdict Hero Banner */}
         <VerdictHero mission={mission} />
+
+        {/* In-Flight Live HUD Strip (Active when in-flight mode or playback running) */}
+        {flightViewMode === "INFLIGHT_HUD" && (
+          <LiveTelemetryHUD
+            telemetry={liveTelemetry}
+            isPlaying={isPlayingTelemetry}
+            onTogglePlayback={() => setIsPlayingTelemetry(!isPlayingTelemetry)}
+            onResetFlight={handleResetFlightPlayback}
+            onInjectWindShear={handleInjectWindShear}
+            onInjectBatteryDegrade={handleInjectBatteryDegrade}
+            hasInjectedShear={injectedShearKt > 0}
+            hasInjectedDegrade={injectedSocDegradePercent > 0}
+          />
+        )}
 
         {/* 2. Vector Airspace Radar & 5-Factor Risk Matrix (Two-Column Layout) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-7 space-y-4">
-            <AirspaceMapClient mission={mission} />
+            <AirspaceMapClient mission={mission} liveTelemetry={liveTelemetry} />
           </div>
           <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
             <RiskMatrix factors={mission.risk.factors} hardGates={mission.risk.hardGates} />
@@ -230,14 +359,17 @@ export default function MissionCockpitPage() {
         {/* 3. Real-Time Telemetry Grid (Weather, Energy, Aircraft Envelope) */}
         <TelemetryGrid mission={mission} />
 
-        {/* 4. Explainable AI Briefing Card (Gemini 2.5 Flash & Voice Radio) */}
+        {/* 4. Vertiport Pad Reservation & Fast-Charge Matrix (v2.0) */}
+        <VertiportGrid vertiportState={mission.vertiportOps} />
+
+        {/* 5. Explainable AI Briefing Card (Gemini 2.5 Flash & Voice Radio) */}
         <AIBriefingCard
           mission={mission}
           onRegenerateBriefing={handleRegenerateAIBriefing}
           isLoading={isAiLoading}
         />
 
-        {/* 5. Aerodynamic "What-If" Telemetry Simulator */}
+        {/* 6. Aerodynamic "What-If" Telemetry Simulator */}
         <WhatIfSimulator
           params={whatIfParams}
           onChange={handleWhatIfChange}
@@ -246,7 +378,10 @@ export default function MissionCockpitPage() {
           maxCrosswindKts={mission.aircraft.maxCrosswindKts}
         />
 
-        {/* 6. Traceable Evidence Audit Drawer */}
+        {/* 7. DO-178C Cryptographic Blackbox Audit Ledger (v2.0) */}
+        <BlackboxAudit ledger={mission.blackboxLedger} />
+
+        {/* 8. Traceable Evidence Audit Drawer */}
         <EvidenceDrawer evidence={mission.evidence} />
       </main>
 
@@ -260,7 +395,7 @@ export default function MissionCockpitPage() {
       {/* Cockpit Footer */}
       <footer className="border-t border-slate-900 bg-obsidian-950/80 py-4 px-6 text-center text-xs font-mono text-slate-500">
         <p>
-          AeroOps AI (Dyson Sky Aviation Edition) • Deterministic Rules Safety Engine & Google Gemini 2.5 Flash Explainer
+          AeroOps AI v2.0 (Enterprise Fleet & In-Flight OS) • Deterministic Rules Safety Engine, 1Hz Live Telemetry & SHA-256 Merkle Ledger
         </p>
       </footer>
     </div>

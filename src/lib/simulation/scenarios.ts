@@ -3,6 +3,9 @@ import { decomposeWindVector } from "../weather";
 import { calculateEnergyAndPONR } from "../energy";
 import { evaluateAirspaceConflicts } from "../airspace";
 import { compileEvidenceAudit, evaluateMissionRisk } from "../risk";
+import { generateCorridorMicroWeatherSegments } from "../micro-weather";
+import { reserveVertiportArrivalSlot } from "../vertiport-ops";
+import { initializeMissionBlackboxLedger } from "../blackbox-crypto";
 
 export const MOCK_AIRCRAFT_FLEET: AircraftSpecs[] = [
   {
@@ -94,6 +97,23 @@ export const MOCK_VERTIPORTS: Vertiport[] = [
   },
 ];
 
+export function augmentMissionWithV2Systems(baseMission: FlightMission): FlightMission {
+  const microWeatherSegments = generateCorridorMicroWeatherSegments(baseMission);
+  const { state: vertiportOps } = reserveVertiportArrivalSlot(
+    baseMission.destination.icao,
+    baseMission.callsign,
+    baseMission.energy.estimatedFlightTimeMin
+  );
+  const blackboxLedger = initializeMissionBlackboxLedger(baseMission);
+
+  return {
+    ...baseMission,
+    microWeatherSegments,
+    vertiportOps,
+    blackboxLedger,
+  };
+}
+
 /**
  * Builds full mission twin for Scenario 1: Nominal Flight (GO)
  */
@@ -143,7 +163,7 @@ export function buildScenario1Nominal(): FlightMission {
   const risk = evaluateMissionRisk(aircraft, payloadKg, wind, energy, airspaceConflicts, weather, "SIM");
   const evidence = compileEvidenceAudit(aircraft, payloadKg, weather, wind, energy, airspaceConflicts);
 
-  return {
+  const mission: FlightMission = {
     id: "MISSION-SCENARIO-01-NOMINAL",
     callsign: "AERO-101-NOMINAL",
     aircraft,
@@ -181,6 +201,8 @@ export function buildScenario1Nominal(): FlightMission {
       model_used: "Gemini 2.5 Flash",
     },
   };
+
+  return augmentMissionWithV2Systems(mission);
 }
 
 /**
@@ -232,7 +254,7 @@ export function buildScenario2Amber(): FlightMission {
   const risk = evaluateMissionRisk(aircraft, payloadKg, wind, energy, airspaceConflicts, weather, "SIM");
   const evidence = compileEvidenceAudit(aircraft, payloadKg, weather, wind, energy, airspaceConflicts);
 
-  return {
+  const mission: FlightMission = {
     id: "MISSION-SCENARIO-02-AMBER",
     callsign: "AERO-202-AMBER",
     aircraft,
@@ -272,6 +294,8 @@ export function buildScenario2Amber(): FlightMission {
       model_used: "Gemini 2.5 Flash",
     },
   };
+
+  return augmentMissionWithV2Systems(mission);
 }
 
 /**
@@ -324,7 +348,7 @@ export function buildScenario3Severe(): FlightMission {
   const risk = evaluateMissionRisk(aircraft, payloadKg, wind, energy, airspaceConflicts, weather, "SIM");
   const evidence = compileEvidenceAudit(aircraft, payloadKg, weather, wind, energy, airspaceConflicts);
 
-  return {
+  const mission: FlightMission = {
     id: "MISSION-SCENARIO-03-NOGO",
     callsign: "AERO-303-HAZARD",
     aircraft,
@@ -366,6 +390,8 @@ export function buildScenario3Severe(): FlightMission {
       model_used: "Gemini 2.5 Flash",
     },
   };
+
+  return augmentMissionWithV2Systems(mission);
 }
 
 export const PRESET_SCENARIOS = {
