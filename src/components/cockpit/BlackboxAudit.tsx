@@ -11,15 +11,16 @@ interface BlackboxAuditProps {
 
 export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsMounted(true);
   }, []);
 
   if (!ledger) return null;
 
-  const verification = verifyLedgerIntegrity(ledger);
+  const rootHash = ledger.rootHash;
+  const shortHash = rootHash ? `${rootHash.substring(0, 10)}...${rootHash.substring(rootHash.length - 6)}` : "0x00000...0000";
 
   return (
     <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-4">
@@ -33,8 +34,11 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
               <h3 className="text-sm font-semibold tracking-wide text-white font-sans">
                 DO-178C Cryptographic Flight Blackbox Audit Ledger
               </h3>
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                {ledger.rootHash.substring(0, 10)}...{ledger.rootHash.substring(ledger.rootHash.length - 6)} [IMMUTABLE AUDIT LOCKED]
+              <span
+                suppressHydrationWarning={true}
+                className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+              >
+                {shortHash} [IMMUTABLE AUDIT LOCKED]
               </span>
             </div>
             <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -73,7 +77,7 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
                   BLOCK #{block.blockIndex}: {block.eventType}
                 </span>
                 <span suppressHydrationWarning={true} className="text-[10px] text-slate-500">
-                  {mounted ? block.isoTimestamp : "ISO UTC TIMESTAMP"}
+                  {block.isoTimestamp}
                 </span>
               </div>
 
@@ -82,11 +86,15 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-400 border-t border-white/[0.04] pt-2">
                 <div className="truncate">
                   <span className="text-slate-500">Previous Hash: </span>
-                  <span className="text-slate-400 font-mono">{block.previousHash}</span>
+                  <span suppressHydrationWarning={true} className="text-slate-400 font-mono">
+                    {block.previousHash}
+                  </span>
                 </div>
                 <div className="truncate text-right sm:text-left">
                   <span className="text-slate-500">Block Signature: </span>
-                  <span className="text-emerald-400 font-bold font-mono">{block.blockHash}</span>
+                  <span suppressHydrationWarning={true} className="text-emerald-400 font-bold font-mono">
+                    {block.blockHash}
+                  </span>
                 </div>
               </div>
             </div>

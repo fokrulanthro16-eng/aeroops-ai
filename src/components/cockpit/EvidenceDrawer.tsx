@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EvidenceAuditItem } from "@/types/aviation";
 import { Table, ChevronDown, ChevronUp, CheckCircle, AlertTriangle, XCircle, ShieldCheck, Lock } from "lucide-react";
 
@@ -11,6 +11,11 @@ interface EvidenceDrawerProps {
 export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({ evidence }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [filterSubsystem, setFilterSubsystem] = useState<string>("ALL");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const filteredItems = evidence.filter((item) =>
     filterSubsystem === "ALL" ? true : item.subsystem === filterSubsystem
@@ -51,7 +56,10 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({ evidence }) => {
               <h3 className="text-sm font-semibold tracking-wide text-white font-sans">
                 Traceable Source-to-Decision Evidence Audit Ledger
               </h3>
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 font-semibold flex items-center gap-1">
+              <span
+                suppressHydrationWarning={true}
+                className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 font-semibold flex items-center gap-1"
+              >
                 <Lock className="w-2.5 h-2.5" /> 0x89be...1fc7 [IMMUTABLE AUDIT LOCKED]
               </span>
             </div>
