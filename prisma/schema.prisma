@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Aircraft {
+  id                    String   @id @default(uuid())
+  tailNumber            String   @unique
+  model                 String
+  type                  String
+  mtowKg                Float
+  emptyWeightKg         Float
+  maxPayloadKg          Float
+  batteryCapacityKwh    Float
+  basePowerHoverKw      Float
+  basePowerCruiseKw     Float
+  nominalCruiseSpeedKts Float
+  maxCrosswindKts       Float
+  maxOperatingWindKts   Float
+  minReserveSocPercent  Float    @default(25.0)
+  status                String   @default("READY")
+  currentSocPercent     Float    @default(90.0)
+  locationIcao          String   @default("KLAX")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  missions              Mission[]
+}
+
+model VertiportLocation {
+  id            String   @id @default(uuid())
+  icao          String   @unique
+  name          String
+  lat           Float
+  lon           Float
+  elevationFt   Float
+  runwaysJson   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Mission {
+  id                String   @id @default(uuid())
+  callsign          String
+  aircraftId        String
+  aircraft          Aircraft @relation(fields: [aircraftId], references: [id])
+  originIcao        String
+  destIcao          String
+  distanceKm        Float
+  routeHeadingDeg   Float
+  payloadKg         Float
+  initialSocPercent Float
+  verdict           String
+  riskScore         Float
+  mode              String   @default("LIVE")
+  weatherJson       String
+  windJson          String
+  energyJson        String
+  airspaceJson      String
+  riskFactorsJson   String
+  hardGatesJson     String
+  evidenceJson      String
+  aiBriefingJson    String?
+  status            String   @default("PLANNING")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
