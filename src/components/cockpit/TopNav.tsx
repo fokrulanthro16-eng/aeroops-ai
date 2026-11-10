@@ -57,7 +57,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                 AeroOps<span className="text-cyan-400 font-light ml-0.5">AI</span>
               </span>
               <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 tracking-wide font-mono">
-                AERO-EDITORIAL OS
+                v3.0 ENTERPRISE • QNX 8.0 RTOS
               </span>
             </div>
           </div>

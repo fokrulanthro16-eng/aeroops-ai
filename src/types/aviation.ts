@@ -1,3 +1,4 @@
+export type RecommendedAction = "CONTINUE_NOMINAL" | "HOLD" | "DIVERT_TO_ALTERNATE" | "EMERGENCY_LANDING";
 export type VerdictType = "GO" | "AMBER" | "NO_GO";
 
 export interface AircraftSpecs {
@@ -144,6 +145,7 @@ export interface AIBriefingPayload {
   voice_briefing_transcript: string;
   generated_at?: string;
   model_used?: string;
+  isFallback?: boolean;
 }
 
 // -------------------------------------------------------------

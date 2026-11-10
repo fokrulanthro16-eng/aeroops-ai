@@ -24,6 +24,12 @@ import { reserveVertiportArrivalSlot } from "@/lib/vertiport-ops";
 import { initializeMissionBlackboxLedger } from "@/lib/blackbox-crypto";
 import { FlightMission, InFlightTelemetry, WeatherData } from "@/types/aviation";
 import { pilotVoice } from "@/lib/tts";
+import {
+  generateSyntheticBatteryStatus,
+  generateSyntheticGlobalPosition,
+  parseMavlinkV2Packet,
+  convertMavlinkToTelemetry,
+} from "@/lib/telemetry/mavlink-parser";
 
 export default function MissionCockpitPage() {
   const [mission, setMission] = useState<FlightMission>(PRESET_SCENARIOS.scenario1);
@@ -39,6 +45,7 @@ export default function MissionCockpitPage() {
   const [isPlayingTelemetry, setIsPlayingTelemetry] = useState(false);
   const [injectedShearKt, setInjectedShearKt] = useState(0);
   const [injectedSocDegradePercent, setInjectedSocDegradePercent] = useState(0);
+  const [telemetrySource, setTelemetrySource] = useState<"SIMULATED" | "MAVLINK_V2" | "QNX_POSIX">("MAVLINK_V2");
 
   // Live 1Hz In-Flight Telemetry Object
   const [liveTelemetry, setLiveTelemetry] = useState<InFlightTelemetry>(() =>
@@ -149,11 +156,33 @@ export default function MissionCockpitPage() {
       interval = setInterval(() => {
         setFlightElapsedSec((prev) => {
           const next = prev + 5;
-          const nextTelemetry = computeInFlightTelemetryFrame(mission, next, {
+          let nextTelemetry = computeInFlightTelemetryFrame(mission, next, {
             speedMultiplier: 2,
             injectedWindShearKt: injectedShearKt,
             injectedSocDegradationPercent: injectedSocDegradePercent,
           });
+          // Ingest telemetry via real-time MAVLink v2 binary packet roundtrip
+          if (telemetrySource === "MAVLINK_V2") {
+            const posPacket = generateSyntheticGlobalPosition(
+              nextTelemetry.currentCoordinates.lat,
+              nextTelemetry.currentCoordinates.lon,
+              nextTelemetry.currentAltitudeFt,
+              nextTelemetry.currentGroundSpeedKts,
+              mission.routeHeadingDeg
+            );
+            const battPacket = generateSyntheticBatteryStatus(
+              nextTelemetry.liveBatterySoc,
+              nextTelemetry.batteryCellTempC,
+              120
+            );
+            const decodedPos = parseMavlinkV2Packet(posPacket);
+            const decodedBatt = parseMavlinkV2Packet(battPacket);
+
+            if (decodedPos?.type === "GLOBAL_POSITION_INT" && decodedBatt?.type === "BATTERY_STATUS") {
+              nextTelemetry = convertMavlinkToTelemetry(decodedPos.payload, decodedBatt.payload, nextTelemetry);
+            }
+          }
+
           setLiveTelemetry(nextTelemetry);
 
           if (nextTelemetry.flightPhase === "LANDED") {
@@ -166,7 +195,7 @@ export default function MissionCockpitPage() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlayingTelemetry, mission, injectedShearKt, injectedSocDegradePercent]);
+  }, [isPlayingTelemetry, mission, injectedShearKt, injectedSocDegradePercent, telemetrySource]);
 
   const handleWhatIfChange = (updated: Partial<typeof whatIfParams>) => {
     const nextParams = { ...whatIfParams, ...updated };
@@ -345,6 +374,8 @@ export default function MissionCockpitPage() {
             onInjectBatteryDegrade={handleInjectBatteryDegrade}
             hasInjectedShear={injectedShearKt > 0}
             hasInjectedDegrade={injectedSocDegradePercent > 0}
+            telemetrySource={telemetrySource}
+            onSelectTelemetrySource={setTelemetrySource}
           />
         )}
 

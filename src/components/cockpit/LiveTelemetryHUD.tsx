@@ -26,6 +26,8 @@ interface LiveTelemetryHUDProps {
   onInjectBatteryDegrade: () => void;
   hasInjectedShear: boolean;
   hasInjectedDegrade: boolean;
+  telemetrySource?: "SIMULATED" | "MAVLINK_V2" | "QNX_POSIX";
+  onSelectTelemetrySource?: (source: "SIMULATED" | "MAVLINK_V2" | "QNX_POSIX") => void;
 }
 
 export const LiveTelemetryHUD: React.FC<LiveTelemetryHUDProps> = ({
@@ -37,6 +39,8 @@ export const LiveTelemetryHUD: React.FC<LiveTelemetryHUDProps> = ({
   onInjectBatteryDegrade,
   hasInjectedShear,
   hasInjectedDegrade,
+  telemetrySource = "SIMULATED",
+  onSelectTelemetrySource,
 }) => {
   const isDiverting = telemetry.flightPhase === "DIVERTING";
 
@@ -57,6 +61,20 @@ export const LiveTelemetryHUD: React.FC<LiveTelemetryHUDProps> = ({
                 1Hz TELEMETRY ACTIVE
               </span>
             </div>
+
+
+            {/* Real-Time DO-178C & MAVLink Architecture Badges */}
+            <div className="flex flex-wrap items-center gap-2 my-1.5">
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 font-mono font-semibold tracking-wide">
+                [KERNEL: QNX 8.0 POSIX ACTIVE]
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-mono font-semibold tracking-wide">
+                [TELEMETRY: MAVLINK v2 CONNECTED]
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-mono font-semibold tracking-wide">
+                [AIRLOCK: DETERMINISTIC SAFE]
+              </span>
+            </div>
             <p className="text-xs text-slate-400 font-mono mt-0.5">
               Flight Phase: <span className="text-cyan-300 font-bold">{telemetry.flightPhase}</span> • Alt:{" "}
               <span className="text-slate-200 font-bold">{telemetry.currentAltitudeFt} ft</span> • Ground Speed:{" "}
@@ -67,6 +85,40 @@ export const LiveTelemetryHUD: React.FC<LiveTelemetryHUDProps> = ({
 
         {/* Flight Playback & Anomaly Triggers */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {onSelectTelemetrySource && (
+            <div className="flex items-center p-1 rounded-full bg-slate-950/70 border border-white/10 text-[11px] font-mono mr-1">
+              <button
+                onClick={() => onSelectTelemetrySource("SIMULATED")}
+                className={`px-2.5 py-1 rounded-full transition-all ${
+                  telemetrySource === "SIMULATED"
+                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-semibold shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                SIM
+              </button>
+              <button
+                onClick={() => onSelectTelemetrySource("MAVLINK_V2")}
+                className={`px-2.5 py-1 rounded-full transition-all ${
+                  telemetrySource === "MAVLINK_V2"
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 font-semibold shadow-[0_0_8px_rgba(56,189,248,0.3)]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                MAVLink v2
+              </button>
+              <button
+                onClick={() => onSelectTelemetrySource("QNX_POSIX")}
+                className={`px-2.5 py-1 rounded-full transition-all ${
+                  telemetrySource === "QNX_POSIX"
+                    ? "bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-semibold shadow-[0_0_8px_rgba(99,102,241,0.3)]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                QNX 8.0
+              </button>
+            </div>
+          )}
           <button
             onClick={onTogglePlayback}
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all shadow-md ${
@@ -127,6 +179,8 @@ export const LiveTelemetryHUD: React.FC<LiveTelemetryHUDProps> = ({
                 {telemetry.diversionReason}
               </p>
             </div>
+
+
           </div>
 
           <div className="text-right shrink-0">

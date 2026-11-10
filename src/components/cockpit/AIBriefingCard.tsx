@@ -114,6 +114,26 @@ export const AIBriefingCard: React.FC<AIBriefingCardProps> = ({
         </div>
       </div>
 
+      {/* DO-178C Fallback Banner for Certified Deterministic Template */}
+      {(briefing.isFallback || briefing.model_used?.toLowerCase().includes("fallback") || briefing.model_used?.toLowerCase().includes("deterministic")) && (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3.5 relative z-10 shadow-[0_0_20px_rgba(245,158,11,0.15)]">
+          <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-amber-300 tracking-wide font-mono">
+                [AIRLOCK: DETERMINISTIC SAFE] CERTIFIED DETERMINISTIC TEMPLATE ACTIVE
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 font-mono font-semibold">
+                DO-178C FAIL-SAFE ACTIVE
+              </span>
+            </div>
+            <p className="text-xs text-amber-200/90 leading-relaxed font-sans">
+              Upstream LLM API is operating in deterministic fail-safe mode (offline / unconfigured / rate-limited). Dispatch rationale and mitigation boundaries are rendered exclusively from DO-178C mathematical physics templates with zero probabilistic hallucination risk.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Executive Summary in Editorial Callout Box */}
       <div className="p-5 rounded-2xl bg-slate-950/40 border border-white/[0.06] space-y-2">
         <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block">

@@ -53,6 +53,7 @@ Return ONLY a JSON object strictly matching this schema:
     const parsed = JSON.parse(responseText) as AIBriefingPayload;
     parsed.generated_at = new Date().toISOString();
     parsed.model_used = "Google Gemini 2.5 Flash";
+    parsed.isFallback = false;
     return parsed;
   } catch (error) {
     console.error("[Gemini API Error, falling back to deterministic explanation]:", error);
@@ -84,6 +85,7 @@ function generateFallbackBriefing(mission: FlightMission, sourceTag: string): AI
       voice_briefing_transcript: `AeroOps dispatch to ${mission.callsign}. Mission clearance is GO. Winds are ${mission.wind.windSpeedKts} knots, landing reserve confirmed at ${mission.energy.projectedLandingSocPercent} percent. All safety gates clear for departure.`,
       generated_at: new Date().toISOString(),
       model_used: sourceTag,
+      isFallback: true,
     };
   } else if (verdict === "AMBER") {
     return {
@@ -108,6 +110,7 @@ function generateFallbackBriefing(mission: FlightMission, sourceTag: string): AI
       voice_briefing_transcript: `AeroOps dispatch advisory for ${mission.callsign}. Mission status evaluated as AMBER. Crosswind is ${mission.wind.crosswindKts} knots with ${mission.energy.projectedLandingSocPercent} percent landing reserve. Divert waypoint confirmation required before pushback.`,
       generated_at: new Date().toISOString(),
       model_used: sourceTag,
+      isFallback: true,
     };
   } else {
     return {
@@ -130,6 +133,7 @@ function generateFallbackBriefing(mission: FlightMission, sourceTag: string): AI
       voice_briefing_transcript: `AeroOps emergency alert to ${mission.callsign}. Mission status is strictly NO-GO. Hard safety gates triggered due to prohibitive conditions. Flight authorization is revoked.`,
       generated_at: new Date().toISOString(),
       model_used: sourceTag,
+      isFallback: true,
     };
   }
 }

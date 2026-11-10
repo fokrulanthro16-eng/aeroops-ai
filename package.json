@@ -1,6 +1,6 @@
 {
   "name": "aeroops-ai",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "tsx src/tests/runner.ts",
+    "test:qnx": "tsx tests/qnx-bridge.test.ts",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts"
   },
