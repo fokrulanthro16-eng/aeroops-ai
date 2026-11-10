@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { MerkleAuditLedger } from "@/types/aviation";
-import { Lock, ChevronDown, ChevronUp, Hash, CheckCircle } from "lucide-react";
-import { verifyLedgerIntegrity } from "@/lib/blackbox-crypto";
+import { Lock, ChevronDown, ChevronUp, Hash, CheckCircle, Activity } from "lucide-react";
+import { BlackboxReplay } from "./blackbox-replay";
 
 interface BlackboxAuditProps {
   ledger?: MerkleAuditLedger;
@@ -11,6 +11,7 @@ interface BlackboxAuditProps {
 
 export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showReplay, setShowReplay] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -47,11 +48,23 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 font-semibold">
             <CheckCircle className="w-3.5 h-3.5" />
             <span>Root Signature Verified</span>
           </div>
+
+          <button
+            onClick={() => setShowReplay(!showReplay)}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full border text-xs font-sans transition ${
+              showReplay
+                ? "bg-cyan-500/25 text-cyan-300 border-cyan-400/40 shadow-[0_0_12px_rgba(56,189,248,0.3)] font-semibold"
+                : "bg-slate-950/60 hover:bg-slate-900 border-white/10 text-slate-300"
+            }`}
+          >
+            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{showReplay ? "Close NTSB Replay" : "NTSB Incident Replay"}</span>
+          </button>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -62,6 +75,13 @@ export const BlackboxAudit: React.FC<BlackboxAuditProps> = ({ ledger }) => {
           </button>
         </div>
       </div>
+
+      {/* NTSB Forensic Incident Replay Deck */}
+      {showReplay && (
+        <div className="mt-4 pt-4 border-t border-white/[0.06]">
+          <BlackboxReplay ledger={ledger} onClose={() => setShowReplay(false)} />
+        </div>
+      )}
 
       {/* Expanded Block Chain Explorer */}
       {isOpen && (

@@ -168,6 +168,16 @@ export const TopNav: React.FC<TopNavProps> = ({
             </span>
           </div>
 
+          {/* VC Pitch Sparring Simulator Link */}
+          <Link
+            href="/pitch-sim"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-950/40 hover:bg-indigo-900/50 border border-indigo-500/30 hover:border-indigo-400/50 text-xs font-medium text-indigo-200 hover:text-white transition shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+            title="Launch VC Pitch & Technical Due Diligence Simulator"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="hidden sm:inline">VC Sparring Sim</span>
+          </Link>
+
           {/* Fleet Hub Link */}
           <Link
             href="/fleet"

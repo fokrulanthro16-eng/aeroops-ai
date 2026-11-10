@@ -30,6 +30,8 @@ import {
   parseMavlinkV2Packet,
   convertMavlinkToTelemetry,
 } from "@/lib/telemetry/mavlink-parser";
+import { defaultLossOfLinkManager } from "@/lib/telemetry/loss-of-link";
+import { defaultSitlInjector } from "@/lib/telemetry/sitl-injector";
 
 export default function MissionCockpitPage() {
   const [mission, setMission] = useState<FlightMission>(PRESET_SCENARIOS.scenario1);
@@ -45,7 +47,8 @@ export default function MissionCockpitPage() {
   const [isPlayingTelemetry, setIsPlayingTelemetry] = useState(false);
   const [injectedShearKt, setInjectedShearKt] = useState(0);
   const [injectedSocDegradePercent, setInjectedSocDegradePercent] = useState(0);
-  const [telemetrySource, setTelemetrySource] = useState<"SIMULATED" | "MAVLINK_V2" | "QNX_POSIX">("MAVLINK_V2");
+  const [telemetrySource, setTelemetrySource] = useState<"SIMULATED" | "MAVLINK_V2" | "QNX_POSIX" | "PX4_SITL">("PX4_SITL");
+  const [isC2Severed, setIsC2Severed] = useState(false);
 
   // Live 1Hz In-Flight Telemetry Object
   const [liveTelemetry, setLiveTelemetry] = useState<InFlightTelemetry>(() =>
@@ -161,8 +164,13 @@ export default function MissionCockpitPage() {
             injectedWindShearKt: injectedShearKt,
             injectedSocDegradationPercent: injectedSocDegradePercent,
           });
-          // Ingest telemetry via real-time MAVLink v2 binary packet roundtrip
-          if (telemetrySource === "MAVLINK_V2") {
+
+          // High-Fidelity SITL 10Hz binary frame injection
+          if (telemetrySource === "PX4_SITL") {
+            const sitlFrame = defaultSitlInjector.generateFrame(nextTelemetry, next);
+            nextTelemetry = defaultSitlInjector.injectIntoTelemetry(sitlFrame, nextTelemetry);
+          } else if (telemetrySource === "MAVLINK_V2") {
+            // Ingest telemetry via real-time MAVLink v2 binary packet roundtrip
             const posPacket = generateSyntheticGlobalPosition(
               nextTelemetry.currentCoordinates.lat,
               nextTelemetry.currentCoordinates.lon,
@@ -183,6 +191,21 @@ export default function MissionCockpitPage() {
             }
           }
 
+          // If C2 link is severed, enforce deterministic fail-safe diversion & queue offline telemetry
+          if (isC2Severed) {
+            nextTelemetry = {
+              ...nextTelemetry,
+              flightPhase: "DIVERTING",
+              recommendedAction: "DIVERT_TO_ALTERNATE",
+              diversionTargetIcao: "KBUR",
+              diversionReason: "C2 LINK SEVERED: Dual-radio ground link lost. Airborne autonomous fail-safe active.",
+              distanceToAlternateNm: 12.4,
+              c2LinkStatus: "SEVERED",
+              failSafeMode: "AIRBORNE_AUTONOMOUS_FAILSAFE",
+            };
+            defaultLossOfLinkManager.queueOfflineTelemetryBlock(nextTelemetry, "NO_GO");
+          }
+
           setLiveTelemetry(nextTelemetry);
 
           if (nextTelemetry.flightPhase === "LANDED") {
@@ -195,7 +218,7 @@ export default function MissionCockpitPage() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlayingTelemetry, mission, injectedShearKt, injectedSocDegradePercent, telemetrySource]);
+  }, [isPlayingTelemetry, mission, injectedShearKt, injectedSocDegradePercent, telemetrySource, isC2Severed]);
 
   const handleWhatIfChange = (updated: Partial<typeof whatIfParams>) => {
     const nextParams = { ...whatIfParams, ...updated };
@@ -231,6 +254,7 @@ export default function MissionCockpitPage() {
     setFlightElapsedSec(0);
     setInjectedShearKt(0);
     setInjectedSocDegradePercent(0);
+    setIsC2Severed(false);
     setLiveTelemetry(computeInFlightTelemetryFrame(selected, 0));
   };
 
@@ -271,11 +295,55 @@ export default function MissionCockpitPage() {
     }
   };
 
+  // Dual-Radio C2 Link Severance Toggle
+  const handleToggleC2Link = () => {
+    if (!isC2Severed) {
+      const { updatedTelemetry, eventBlock } = defaultLossOfLinkManager.severC2Link(
+        liveTelemetry,
+        mission.blackboxLedger
+      );
+      setIsC2Severed(true);
+      setLiveTelemetry(updatedTelemetry);
+      if (mission.blackboxLedger) {
+        setMission((prev) => ({
+          ...prev,
+          blackboxLedger: {
+            ...prev.blackboxLedger!,
+            rootHash: eventBlock.blockHash,
+            blockCount: prev.blackboxLedger!.blockCount + 1,
+            blocks: [...prev.blackboxLedger!.blocks, eventBlock],
+          },
+        }));
+      }
+      pilotVoice.speak(
+        "Warning. C2 command and control link severed. Airborne autonomous fail-safe engaged. Routing locked to Burbank Pad 2."
+      );
+    } else {
+      if (mission.blackboxLedger) {
+        const { reconciledLedger } = defaultLossOfLinkManager.restoreC2Link(mission.blackboxLedger);
+        setMission((prev) => ({
+          ...prev,
+          blackboxLedger: reconciledLedger,
+        }));
+      }
+      setIsC2Severed(false);
+      setLiveTelemetry((prev) => ({
+        ...prev,
+        c2LinkStatus: "CONNECTED",
+        failSafeMode: "NOMINAL",
+      }));
+      pilotVoice.speak(
+        "C2 link restored. Flushed offline telemetry buffer. Ledger reconciled with zero cryptographic fragmentation."
+      );
+    }
+  };
+
   const handleResetFlightPlayback = () => {
     setFlightElapsedSec(0);
     setIsPlayingTelemetry(false);
     setInjectedShearKt(0);
     setInjectedSocDegradePercent(0);
+    setIsC2Severed(false);
     setLiveTelemetry(computeInFlightTelemetryFrame(mission, 0));
   };
 
@@ -376,6 +444,8 @@ export default function MissionCockpitPage() {
             hasInjectedDegrade={injectedSocDegradePercent > 0}
             telemetrySource={telemetrySource}
             onSelectTelemetrySource={setTelemetrySource}
+            onToggleC2Link={handleToggleC2Link}
+            isC2Severed={isC2Severed}
           />
         )}
 
@@ -401,7 +471,7 @@ export default function MissionCockpitPage() {
           maxCrosswindKts={mission.aircraft.maxCrosswindKts}
         />
 
-        {/* DO-178C Cryptographic Blackbox Audit Ledger */}
+        {/* DO-178C Cryptographic Blackbox Audit Ledger with NTSB Incident Replay */}
         <BlackboxAudit ledger={mission.blackboxLedger} />
 
         {/* Traceable Evidence Audit Drawer */}

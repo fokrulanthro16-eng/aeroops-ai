@@ -84,8 +84,9 @@ export const WaveformCanvas: React.FC<WaveformCanvasProps> = ({
       if (analyserNode && speakerState === "FOUNDER_SPEAKING") {
         try {
           const bufferLength = analyserNode.frequencyBinCount;
-          liveFreqData = new Uint8Array(bufferLength);
-          analyserNode.getByteFrequencyData(liveFreqData);
+          const dataArray = new Uint8Array(new ArrayBuffer(bufferLength));
+          analyserNode.getByteFrequencyData(dataArray);
+          liveFreqData = dataArray;
         } catch {
           liveFreqData = null;
         }

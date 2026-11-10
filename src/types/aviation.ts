@@ -188,6 +188,17 @@ export interface InFlightTelemetry {
     lat: number;
     lon: number;
   };
+  attitude?: {
+    rollDeg: number;
+    pitchDeg: number;
+    yawDeg: number;
+    rollRateDps?: number;
+    pitchRateDps?: number;
+    yawRateDps?: number;
+  };
+  motorRpm?: number[];
+  c2LinkStatus?: "CONNECTED" | "SEVERED" | "RECONNECTING";
+  failSafeMode?: "NOMINAL" | "AIRBORNE_AUTONOMOUS_FAILSAFE" | "EMERGENCY_RECOVERY";
 }
 
 export interface MicroWeatherSegment {

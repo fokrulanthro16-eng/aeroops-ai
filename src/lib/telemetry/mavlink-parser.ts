@@ -16,6 +16,7 @@ export const MAVLINK_V2_STX = 0xfd;
 // Message CRC_EXTRA lookup table
 export const MAVLINK_MESSAGE_CRCS: Record<number, number> = {
   0: 50,    // HEARTBEAT
+  30: 39,   // ATTITUDE
   33: 104,  // GLOBAL_POSITION_INT
   147: 154, // BATTERY_STATUS
 };
@@ -53,6 +54,19 @@ export interface MavlinkGlobalPositionPayload {
   headingDeg: number;     // Degrees (converted from cdeg)
 }
 
+export interface MavlinkAttitudePayload {
+  timeBootMs: number;
+  rollRad: number;
+  pitchRad: number;
+  yawRad: number;
+  rollDeg: number;
+  pitchDeg: number;
+  yawDeg: number;
+  rollSpeedRadS: number;
+  pitchSpeedRadS: number;
+  yawSpeedRadS: number;
+}
+
 export interface MavlinkBatteryStatusPayload {
   batteryId: number;
   temperatureC: number;   // °C (converted from cdegC)
@@ -65,6 +79,7 @@ export interface MavlinkBatteryStatusPayload {
 
 export type MavlinkDecodedPacket =
   | { type: "HEARTBEAT"; header: MavlinkV2Header; payload: MavlinkHeartbeatPayload }
+  | { type: "ATTITUDE"; header: MavlinkV2Header; payload: MavlinkAttitudePayload }
   | { type: "GLOBAL_POSITION_INT"; header: MavlinkV2Header; payload: MavlinkGlobalPositionPayload }
   | { type: "BATTERY_STATUS"; header: MavlinkV2Header; payload: MavlinkBatteryStatusPayload }
   | { type: "UNKNOWN"; header: MavlinkV2Header; rawPayload: Uint8Array };
@@ -139,6 +154,17 @@ export function parseMavlinkV2Packet(data: Uint8Array): MavlinkDecodedPacket | n
   if (data.length < totalExpectedLen) return null;
 
   const msgId = data[7] | (data[8] << 8) | (data[9] << 16);
+
+  // Validate X.25 CRC if message CRC extra is registered
+  const crcExtra = MAVLINK_MESSAGE_CRCS[msgId];
+  if (crcExtra !== undefined) {
+    const calculatedCrc = computeMavlinkCrc(data.subarray(0, 10 + payloadLen), crcExtra);
+    const receivedCrc = data[10 + payloadLen] | (data[10 + payloadLen + 1] << 8);
+    if (calculatedCrc !== receivedCrc) {
+      return null;
+    }
+  }
+
   const header: MavlinkV2Header = {
     magic: data[0],
     payloadLength: payloadLen,
@@ -171,6 +197,35 @@ export function parseMavlinkV2Packet(data: Uint8Array): MavlinkDecodedPacket | n
         baseMode,
         systemStatus,
         mavlinkVersion,
+      },
+    };
+  }
+
+  if (msgId === 30) {
+    // ATTITUDE (#30, length 28)
+    const timeBootMs = payloadView.getUint32(0, true);
+    const roll = payloadView.getFloat32(4, true);
+    const pitch = payloadView.getFloat32(8, true);
+    const yaw = payloadView.getFloat32(12, true);
+    const rollspeed = payloadView.getFloat32(16, true);
+    const pitchspeed = payloadView.getFloat32(20, true);
+    const yawspeed = payloadView.getFloat32(24, true);
+
+    const radToDeg = 180 / Math.PI;
+    return {
+      type: "ATTITUDE",
+      header,
+      payload: {
+        timeBootMs,
+        rollRad: Math.round(roll * 1000) / 1000,
+        pitchRad: Math.round(pitch * 1000) / 1000,
+        yawRad: Math.round(yaw * 1000) / 1000,
+        rollDeg: Math.round(roll * radToDeg * 10) / 10,
+        pitchDeg: Math.round(pitch * radToDeg * 10) / 10,
+        yawDeg: Math.round(yaw * radToDeg * 10) / 10,
+        rollSpeedRadS: Math.round(rollspeed * 1000) / 1000,
+        pitchSpeedRadS: Math.round(pitchspeed * 1000) / 1000,
+        yawSpeedRadS: Math.round(yawspeed * 1000) / 1000,
       },
     };
   }
@@ -264,6 +319,30 @@ export function generateSyntheticHeartbeat(seq = 0): Uint8Array {
   return encodeMavlinkV2Packet(0, payload, seq);
 }
 
+export function generateSyntheticAttitude(
+  rollDeg: number,
+  pitchDeg: number,
+  yawDeg: number,
+  rollSpeedRadS = 0.01,
+  pitchSpeedRadS = 0.01,
+  yawSpeedRadS = 0.02,
+  seq = 0
+): Uint8Array {
+  const payload = new Uint8Array(28);
+  const view = new DataView(payload.buffer);
+  const degToRad = Math.PI / 180;
+
+  view.setUint32(0, Date.now() & 0xffffffff, true);
+  view.setFloat32(4, rollDeg * degToRad, true);
+  view.setFloat32(8, pitchDeg * degToRad, true);
+  view.setFloat32(12, yawDeg * degToRad, true);
+  view.setFloat32(16, rollSpeedRadS, true);
+  view.setFloat32(20, pitchSpeedRadS, true);
+  view.setFloat32(24, yawSpeedRadS, true);
+
+  return encodeMavlinkV2Packet(30, payload, seq);
+}
+
 export function generateSyntheticGlobalPosition(
   latDeg: number,
   lonDeg: number,
@@ -326,7 +405,8 @@ export function generateSyntheticBatteryStatus(
 export function convertMavlinkToTelemetry(
   pos: MavlinkGlobalPositionPayload,
   battery: MavlinkBatteryStatusPayload,
-  baselineTelemetry: InFlightTelemetry
+  baselineTelemetry: InFlightTelemetry,
+  att?: MavlinkAttitudePayload
 ): InFlightTelemetry {
   const updated: InFlightTelemetry = {
     ...baselineTelemetry,
@@ -340,6 +420,16 @@ export function convertMavlinkToTelemetry(
       lat: pos.latDeg,
       lon: pos.lonDeg,
     },
+    attitude: att
+      ? {
+          rollDeg: att.rollDeg,
+          pitchDeg: att.pitchDeg,
+          yawDeg: att.yawDeg,
+          rollRateDps: Math.round(att.rollSpeedRadS * (180 / Math.PI) * 10) / 10,
+          pitchRateDps: Math.round(att.pitchSpeedRadS * (180 / Math.PI) * 10) / 10,
+          yawRateDps: Math.round(att.yawSpeedRadS * (180 / Math.PI) * 10) / 10,
+        }
+      : baselineTelemetry.attitude,
   };
 
   // Check QNX DO-178C deterministic safety limits
