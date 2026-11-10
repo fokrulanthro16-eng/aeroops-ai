@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck } from "lucide-react";
+import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck, Film } from "lucide-react";
 import { FlightViewMode } from "./FlightModeToggle";
+import { CinematicTheaterModal } from "@/components/pitch-sim/CinematicTheaterModal";
 
 interface TopNavProps {
   currentMode: "LIVE" | "SIM" | "HYBRID";
@@ -29,6 +30,7 @@ export const TopNav: React.FC<TopNavProps> = ({
   onFlightViewModeChange,
 }) => {
   const [utcTime, setUtcTime] = useState<string>("");
+  const [isCinematicOpen, setIsCinematicOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -178,6 +180,16 @@ export const TopNav: React.FC<TopNavProps> = ({
             <span className="hidden sm:inline">VC Sparring Sim</span>
           </Link>
 
+          {/* 8K Masterclass Cinematic Video & Voiceover Assets Pipeline Button */}
+          <button
+            onClick={() => setIsCinematicOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 hover:border-cyan-400/50 text-xs font-medium text-cyan-200 hover:text-white transition shadow-[0_0_12px_rgba(0,242,254,0.15)]"
+            title="8K Masterclass Cinematic Video & Voiceover Pipeline"
+          >
+            <Film className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden sm:inline">8K Reel</span>
+          </button>
+
           {/* Fleet Hub Link */}
           <Link
             href="/fleet"
@@ -197,6 +209,12 @@ export const TopNav: React.FC<TopNavProps> = ({
           </button>
         </div>
       </div>
+
+      {/* 8K Masterclass Cinematic Video & Voiceover Assets Pipeline Modal */}
+      <CinematicTheaterModal
+        isOpen={isCinematicOpen}
+        onClose={() => setIsCinematicOpen(false)}
+      />
     </header>
   );
 };

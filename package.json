@@ -10,6 +10,7 @@
     "test": "tsx src/tests/runner.ts",
     "test:qnx": "tsx tests/qnx-bridge.test.ts",
     "test:moat": "tsx tests/v3-moat-capabilities.test.ts",
+    "test:cinematic": "tsx tests/cinematic-media.test.ts",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts"
   },

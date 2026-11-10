@@ -1,12 +1,9 @@
 /**
  * ==============================================================================
  * AEROOPS AI — MULTI-PERSONA ADVERSARIAL STATE MACHINE
- * Version: 3.5 Nebius Multimodal & Boardroom Edition
- * Defines the 4 specialized executive conference room personas:
- * 1. Jason Kraus (Early-Stage Venture Catalyst - Prepare 4 VC)
- * 2. Sarah Chen (Managing Partner - Deep-Tech Series A Lead)
- * 3. Marcus Vance (FAA DER / DO-178C Avionics Safety Auditor)
- * 4. Dr. Viktor Krenz (Principal QNX RTOS Embedded Systems Architect)
+ * Version: 5.0 Executive Institutional Edition (100% English)
+ * Defines the 4 specialized executive conference room personas with opening questions,
+ * facial states, voice configs, and adversarial cross-examination patterns.
  * ==============================================================================
  */
 
@@ -16,6 +13,15 @@ export type VCFacialState =
   | "TAKING_NOTES"
   | "LEANING_IN_INTERRUPT"
   | "NODDING_APPROVAL";
+
+export interface MistakeAuditFeedback {
+  verdict: "STRONG_ANSWER" | "PARTIAL_OR_VAGUE" | "CRITICAL_MISTAKE";
+  whatYouSaidQuote: string;
+  mistakeDetected: string;
+  idealAnswerScript: string;
+  questionAsked: string;
+  nextQuestion: string;
+}
 
 export interface VCPersona {
   id: string;
@@ -38,6 +44,9 @@ export interface VCPersona {
   provocations: string[];
   defaultHostility: number;
   currentFacialState?: VCFacialState;
+  openingQuestion: {
+    question: string;
+  };
   trapQuestions: {
     hostility: number;
     question: string;
@@ -77,7 +86,7 @@ export const VC_PERSONAS: VCPersona[] = [
     themeBg: "bg-sky-950/30",
     themeText: "text-sky-400",
     voiceConfig: {
-      pitch: 1.05,
+      pitch: 1.0,
       rate: 1.08,
       lang: "en-US",
     },
@@ -106,6 +115,10 @@ export const VC_PERSONAS: VCPersona[] = [
       "pipeline",
     ],
     defaultHostility: 3,
+    openingQuestion: {
+      question:
+        "You are building a QNX C++ kernel, which sounds expensive and slow to certify. How do you get to $1M ARR in the next 12 months with existing commercial drone operators before a single eVTOL carries a paying passenger?",
+    },
     trapQuestions: [
       {
         hostility: 2,
@@ -118,7 +131,7 @@ export const VC_PERSONAS: VCPersona[] = [
         hostility: 3,
         question:
           "You are building a QNX C++ kernel, which sounds expensive and slow to certify—how do you get to $1M ARR in the next 12 months with existing commercial drone operators before a single eVTOL carries a paying passenger?",
-        expectedEvidence: ["$1,200-$3,500 ARR/tail", "450 tails", "Part 108 BVLOS", "immediate drone delivery wedge"],
+        expectedEvidence: ["$1,200-$3,500 ARR/tail", "40-50 fleet operators", "Part 108 BVLOS", "immediate drone delivery wedge"],
         killerFollowUp: "What is your customer CAC payback period on those initial 400 tails?",
       },
       {
@@ -171,8 +184,8 @@ export const VC_PERSONAS: VCPersona[] = [
     themeBg: "bg-amber-950/30",
     themeText: "text-amber-400",
     voiceConfig: {
-      pitch: 0.95,
-      rate: 1.15,
+      pitch: 1.05,
+      rate: 1.05,
       lang: "en-US",
     },
     focusAreas: [
@@ -202,12 +215,16 @@ export const VC_PERSONAS: VCPersona[] = [
       "burn",
     ],
     defaultHostility: 4,
+    openingQuestion: {
+      question:
+        "Walk me through your exact ARR per tail and gross margin structure. If an operator runs 500 flight hours a month per drone, does your Gemini 2.5 Flash token cost eat your SaaS margin?",
+    },
     trapQuestions: [
       {
         hostility: 3,
         question:
           "Walk me through your exact ARR per tail and gross margin structure. If an operator runs 500 flight hours a month per drone, does your Gemini 2.5 Flash token cost eat your SaaS margin?",
-        expectedEvidence: ["82%+ gross margin", "edge C++ kernel filters telemetry", "Gemini called only on state delta triggers", "$0.04/hr inference"],
+        expectedEvidence: ["84% gross margin", "edge C++ kernel filters telemetry", "Gemini called only on state delta triggers", "$0.42/hr inference"],
         killerFollowUp: "What happens to your cloud AWS bill when an operator scales from 10 to 500 drones?",
       },
       {
@@ -221,7 +238,7 @@ export const VC_PERSONAS: VCPersona[] = [
         hostility: 5,
         question:
           "Aerospace enterprise sales cycles are notoriously 18 to 24 months long. With your current runway, you have 14 months of cash. How do you survive the pilot evaluation purgatory?",
-        expectedEvidence: ["Software-only deployment", "non-intrusive MAVLink integration", "converting drone operators in under 6 months"],
+        expectedEvidence: ["Software-only deployment", "non-intrusive MAVLink integration", "converting drone operators in under 60 days"],
         killerFollowUp: "What is your signed pipeline value that can close in under 90 days?",
       },
     ],
@@ -233,7 +250,7 @@ export const VC_PERSONAS: VCPersona[] = [
     },
     secretMonologues: {
       positive: [
-        "Edge filtering is smart. Decoupling 1,000Hz telemetry from cloud LLM calls protects their 80%+ gross margin.",
+        "Edge filtering is smart. Decoupling 1,000Hz telemetry from cloud LLM calls protects their 84% gross margin.",
         "They actually understand aerospace sales cycles—targeting Part 108 operators sidesteps Boeing's 2-year procurement.",
         "Clean unit economics. $2,400/tail with low COGS is a scalable Series A thesis.",
       ],
@@ -252,7 +269,7 @@ export const VC_PERSONAS: VCPersona[] = [
       skeptical: "Sarah suspects continuous telemetry will compress margins below 50%...",
       notes: "Sarah is calculating CAC payback on $2,400/tail across 450 airframes...",
       interrupt: "Sarah is demanding exact gross margin and payback numbers!",
-      approval: "Sarah nods: edge filtering protects 82%+ gross margins cleanly.",
+      approval: "Sarah nods: edge filtering protects 84% gross margins cleanly.",
     },
   },
   {
@@ -301,6 +318,10 @@ export const VC_PERSONAS: VCPersona[] = [
       "part 135",
     ],
     defaultHostility: 4,
+    openingQuestion: {
+      question:
+        "If your Gemini 2.5 Flash layer hallucinates a benign weather summary while the deterministic engine flags a marginal amber warning, and the RPIC dispatches the aircraft into a shear zone, who holds legal liability—and how do you prove temporal and memory isolation under DO-178C?",
+    },
     trapQuestions: [
       {
         hostility: 3,
@@ -366,8 +387,8 @@ export const VC_PERSONAS: VCPersona[] = [
     themeBg: "bg-emerald-950/30",
     themeText: "text-emerald-400",
     voiceConfig: {
-      pitch: 1.0,
-      rate: 1.05,
+      pitch: 0.95,
+      rate: 1.0,
       lang: "en-US",
     },
     focusAreas: [
@@ -399,6 +420,10 @@ export const VC_PERSONAS: VCPersona[] = [
       "hardware",
     ],
     defaultHostility: 4,
+    openingQuestion: {
+      question:
+        "Under a 1,000Hz MAVLink v2 telemetry burst across 50 concurrent tails, what is your p99 IPC latency inside QNX Neutrino, and how do you guarantee the Gemini serialization thread never starves the safety-critical watchdog?",
+    },
     trapQuestions: [
       {
         hostility: 3,
@@ -454,11 +479,11 @@ export const VC_PERSONAS: VCPersona[] = [
   },
 ];
 
-// Compatibility aliases
 const ID_ALIASES: Record<string, string> = {
   "series-a-vc": "sarah-chen",
   "faa-der-auditor": "marcus-vance",
   "qnx-architect": "viktor-krenz",
+  "dr-viktor-krenz": "viktor-krenz",
 };
 
 export function getPersonaById(id: string): VCPersona {

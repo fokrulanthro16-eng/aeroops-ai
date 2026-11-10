@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": {
+    "title": "AeroOps AI v3.0 — The Architecture of Flight",
+    "subtitle": "8K Ultra-HD Masterclass Cinematic Trailer & Technical Defense Pipeline",
+    "version": "3.0.0-ENTERPRISE",
+    "aspectRatio": "2.39:1",
+    "resolution": {
+      "width": 7680,
+      "height": 3213,
+      "standard": "8K DCI Anamorphic Widescreen (Letterbox: 7680x4320)"
+    },
+    "frameRate": 60,
+    "totalDurationSec": 210,
+    "totalDurationFormatted": "03:30:00",
+    "cinematographyStyle": "Christopher Nolan / Denis Villeneuve industrial realism. Cool titanium blues, radar ambers, avionics teals, volumetric fog, photorealistic composite surfaces, anamorphic flares, macro cockpit HUD overlays.",
+    "colorPalette": {
+      "titaniumBlue": "#0A0F1D",
+      "radarAmber": "#FFB800",
+      "avionicsTeal": "#00F2FE",
+      "safetyGreen": "#10B981",
+      "criticalCrimson": "#EF4444",
+      "deepVoid": "#050811"
+    },
+    "audioProfile": {
+      "mixStandard": "Dolby Atmos 7.1.4 Cinema Master (Downmixed to 2.0 Stereo Broadcast)",
+      "voiceActorProfile": "Low-pitch, authoritative British / Mid-Atlantic formal aerospace narrator (Cadence: 125 WPM, Pitch: 88-92Hz fundamental frequency)",
+      "soundDesignElements": [
+        "24Hz Sub-bass Braam impacts",
+        "400Hz avionics telemetry radar chirps",
+        "QNX Neutrino microkernel watchdog ticks",
+        "Electric tilt-rotor turbine spool-up whines",
+        "Cockpit DO-178C master warning alarms"
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "sceneId": "SCENE-01-CERTIFICATION-VOID",
+      "title": "THE CERTIFICATION VOID",
+      "timecode": {
+        "start": "00:00:00:00",
+        "end": "00:00:35:00",
+        "startSec": 0,
+        "endSec": 35,
+        "durationSec": 35
+      },
+      "pacing": "Slow, brooding, building tension into violent atmospheric disruption",
+      "cameraSpecs": {
+        "lens": "Panavision Ultra Panavision 70 65mm Anamorphic, T1.8",
+        "shutterAngle": "180°",
+        "movement": "Macro forward tracking dolly over carbon-fiber wing skin, cutting into volumetric cloud shelf"
+      },
+      "visualDirection": {
+        "environment": "Coastal marine layer storm clouds over the high-rise urban canyon of Los Angeles at golden-hour sunset",
+        "action": "Macro shot of autonomous eVTOL carbon-fiber wing cutting dense urban cloud cover at sunset. HUD alarms flash amber: violent microburst detected. Transition to red telemetry breakdown wireframes.",
+        "lighting": "Volumetric sunlight piercing turbulent cumulus clouds, high-contrast chiaroscuro, specular water droplet reflections on pressurized composite canopy",
+        "vfxOverlays": [
+          "Crosswind vector shear indicator exceeding 28 knots",
+          "BMS pack temperature rising through 48°C",
+          "Catastrophic latency alert: +200ms cloud lag breakdown wireframe"
+        ]
+      },
+      "audioCues": {
+        "soundEffects": [
+          "Low-frequency atmospheric wind buffeting (30Hz-80Hz)",
+          "Anamorphic atmospheric sub-bass Braam at T+0:04",
+          "DO-178C master caution dual-chime at T+0:18",
+          "Telemetry latency dropout distortion static at T+0:26"
+        ],
+        "musicTone": "Low cello drone (Hans Zimmer / Ludwig Göransson aesthetic) building with menacing metallic pulse",
+        "audioDuckingLevel": "-14dB during voiceover"
+      },
+      "voiceover": {
+        "speaker": "Executive Aerospace Narrator (British / Mid-Atlantic Formal)",
+        "transcript": "Urban air mobility is a confirmed 1.5-trillion-dollar frontier. Yet autonomy is paralyzed by a lethal vulnerability: commercial aviation rejects probabilistic cloud latency. A 200-millisecond delay over populated airspace is catastrophic hull loss. Aviation demands deterministic certifiability.",
+        "cadence": "Measured, profound, high-stakes gravitas",
+        "keyWordAccents": [
+          "1.5-trillion-dollar",
+          "lethal vulnerability",
+          "200-millisecond delay",
+          "catastrophic hull loss",
+          "deterministic certifiability"
+        ]
+      },
+      "videoPrompts": {
+        "midjourney": "Cinematic 8K, photorealistic macro 35mm anamorphic shot of modern eVTOL aircraft navigating dense storm clouds over futuristic Los Angeles, volumetric rain streaks on composite canopy, amber HUD warning graphics reflected on glass, ultra-detailed textures, moody contrast, atmospheric lighting, Unreal Engine 5.4 render --ar 2.39:1 --style raw --v 6.1",
+        "sora2": "Slow macro dolly shot moving along the sleek matte-carbon fiber wing of an electric vertical takeoff aircraft cutting through dense coastal turbulence clouds at sunset. Rain droplets streak horizontally across the pressurized glass canopy. Inside the cockpit, minimalist avionics HUD screens glow in amber and crimson wireframes warning of microburst shear. Blade Runner 2049 cinematic lighting, 60fps, 8k resolution, photorealistic aerodynamics.",
+        "runwayGen3": "[Camera: Slow tracking dolly in, 35mm anamorphic] Autonomous eVTOL aircraft wing slice through dense volumetric clouds over Los Angeles skyline at golden hour, raindrops hitting canopy, amber cockpit HUD reflections, moody cinematic atmosphere, titanium blue color grade, photorealistic 8k.",
+        "flux1": "Hyper-realistic 8K photograph of next-generation eVTOL aircraft wing leading edge cutting storm vapor, carbon fiber weave texture visible under rain, amber radar warning reflections in glass canopy, high-stakes cinematic aerospace lighting, 2.39:1 anamorphic."
+      }
+    },
+    {
+      "sceneNumber": 2,
+      "sceneId": "SCENE-02-DETERMINISTIC-AIRLOCK",
+      "title": "THE DETERMINISTIC AIRLOCK",
+      "timecode": {
+        "start": "00:00:35:00",
+        "end": "00:01:25:00",
+        "startSec": 35,
+        "endSec": 85,
+        "durationSec": 50
+      },
+      "pacing": "Precise, surgical, authoritative, technical mastery",
+      "cameraSpecs": {
+        "lens": "Cooke Anamorphic /i Full Frame Plus 40mm Macro, T2.3",
+        "shutterAngle": "180°",
+        "movement": "Smooth surgical push-in through cockpit glass into titanium-encased avionics flight computer bay"
+      },
+      "visualDirection": {
+        "environment": "Hardened airborne avionics chassis with etched titanium cooling fins and gold-plated wirebonds",
+        "action": "Smooth zoom into aircraft avionics bay showing custom silicon running BlackBerry QNX Neutrino RTOS. Telemetry splits cleanly: bottom deterministic C++ state engine executing sub-millisecond math; upper holographic HUD driven by Gemini 2.5 natural language synthesis.",
+        "lighting": "Cool titanium blues (#0A0F1D) and electric neon greens (#10B981) indicating deterministic DO-178C Level A execution; upper holographic projections glow in soft azure (#00F2FE)",
+        "vfxOverlays": [
+          "POSIX PSE52 thread scheduler cycle counter (< 0.24ms WCET)",
+          "Dual-layer split boundary: DETERMINISTIC DECIDES (Bottom) vs AI EXPLAINS (Top)",
+          "Real-time aerodynamic lift equation and thermal derate matrices solving deterministically"
+        ]
+      },
+      "audioCues": {
+        "soundEffects": [
+          "High-frequency QNX RTOS microkernel clock pulses (3200Hz)",
+          "Hydraulic servo actuator click",
+          "Sub-millisecond data lock chime (resonant glass bell)",
+          "Holographic Gemini natural language synthesis acoustic hum"
+        ],
+        "musicTone": "Rhythmic titanium arpeggio synth pulsing at precisely 100 BPM with deep sub-bass bassline",
+        "audioDuckingLevel": "-12dB during voiceover"
+      },
+      "voiceover": {
+        "speaker": "Executive Aerospace Narrator (British / Mid-Atlantic Formal)",
+        "transcript": "Enter AeroOps AI. Engineered to DO-178C Level A standards. At its base: a deterministic BlackBerry QNX 8.0 kernel evaluating physics, battery reserves, and aerodynamic vectors in sub-milliseconds. Above this airlock: Google Gemini 2.5 Flash translating dense aerospace telemetry into instant pilot briefings. Deterministic rules decide; explainable AI explains.",
+        "cadence": "Crisp, commanding, surgical confidence",
+        "keyWordAccents": [
+          "DO-178C Level A",
+          "BlackBerry QNX 8.0 kernel",
+          "sub-milliseconds",
+          "Google Gemini 2.5 Flash",
+          "Deterministic rules decide",
+          "explainable AI explains"
+        ]
+      },
+      "videoPrompts": {
+        "midjourney": "Hyper-realistic 8K close-up interior avionics bay, glowing microprocessors with etched titanium heatsinks, holographic data streams splitting into green deterministic logic blocks and blue natural language vectors, macro depth of field, Octane render --ar 2.39:1 --v 6.1",
+        "sora2": "Smooth macroscopic push-in through the pressurized composite bulkhead of an aircraft into a high-reliability avionics bay. Etched gold circuit boards and titanium heat sinks radiate subtle thermal vapor. A glowing holographic interface bifurcates into two distinct layers: an electric green deterministic state engine executing at 100Hz with zero latency, and an upper cobalt blue cloud interface translating telemetry into clear natural language flight directives. Photorealistic, 8k, Christopher Nolan cinematic grade.",
+        "runwayGen3": "[Camera: Extreme macro push, rack focus] Titanium avionics bay interior with glowing microprocessors, split holographic data streams of green binary logic and blue natural language vectors, volumetric light beams, ultra-clean industrial realism, 8k anamorphic.",
+        "flux1": "Masterpiece 8K macro render of airborne RTOS microprocessor with laser-engraved titanium casing, dual holographic telemetry projections, green deterministic mathematics and cyan AI synthesis, high-end commercial avionics photography, 2.39:1."
+      }
+    },
+    {
+      "sceneNumber": 3,
+      "sceneId": "SCENE-03-THREE-MOATS",
+      "title": "THE THREE IMPENETRABLE MOATS",
+      "timecode": {
+        "start": "00:01:25:00",
+        "end": "00:02:20:00",
+        "startSec": 85,
+        "endSec": 140,
+        "durationSec": 55
+      },
+      "pacing": "Dynamic, aggressive institutional defensibility, rapid technological demonstration",
+      "cameraSpecs": {
+        "lens": "ARRI Signature Prime 28mm Anamorphic, T1.8",
+        "shutterAngle": "180°",
+        "movement": "Dynamic lateral tracking sweeping across dual cockpit displays into wide vertiport deconfliction radar"
+      },
+      "visualDirection": {
+        "environment": "Glass cockpit flight deck transitioning to high-tech coastal vertiport mission control center",
+        "action": "1. Microsecond SHA-256 Merkle chain blocks sealing telemetry in real-time.\n2. Complete C2 link severance; aircraft seamlessly initiates autonomous divert to KBUR Pad 2.\n3. High-frequency 10Hz MAVLink v2 binary streams injecting live attitude data into the cockpit.",
+        "lighting": "Sleek radar displays glowing with high-contrast amber vectors (#FFB800), cyan deconfliction corridors (#00F2FE), and emerald verification checks (#10B981)",
+        "vfxOverlays": [
+          "SHA-256 Merkle chain: BlockHash = SHA256(PrevHash + Time + Payload + Verdict)",
+          "C2 Severance alert: [LINK: LOST | AIRBORNE FAIL-SAFE ACTIVE] with zero fragmentation",
+          "MAVLink v2 telemetry badges: HEARTBEAT (#0), ATTITUDE (#30), GLOBAL_POS (#33), BATTERY (#147)",
+          "135/135 continuous test verification stamp: 0 REGRESSIONS"
+        ]
+      },
+      "audioCues": {
+        "soundEffects": [
+          "Cryptographic block sealing acoustic snap (sharp mechanical lock)",
+          "Loss-of-link disconnect buzzer followed by immediate calm autopilot engagement chime",
+          "10Hz MAVLink binary data stream chirping softly",
+          "Tilt-rotor differential thrust pitch change"
+        ],
+        "musicTone": "Propulsive, driving orchestral percussion with synthetic bass arpeggios signaling absolute technical dominance",
+        "audioDuckingLevel": "-13dB during voiceover"
+      },
+      "voiceover": {
+        "speaker": "Executive Aerospace Narrator (British / Mid-Atlantic Formal)",
+        "transcript": "Three defensible enterprise moats. First: an FAA-grade cryptographic blackbox sealing every millisecond in an immutable SHA-256 Merkle ledger for forensic replay. Second: autonomous loss-of-link fail-safe executing off-grid diversions with zero cloud dependency. Third: native 10Hz MAVLink integration, fully verified across 135 continuous test suites.",
+        "cadence": "Punched, assertive, venture-grade defensibility",
+        "keyWordAccents": [
+          "Three defensible enterprise moats",
+          "cryptographic blackbox",
+          "immutable SHA-256 Merkle ledger",
+          "autonomous loss-of-link fail-safe",
+          "off-grid diversions",
+          "135 continuous test suites"
+        ]
+      },
+      "videoPrompts": {
+        "midjourney": "Ultra-wide 8K shot of vertiport control center and cockpit glass HUD, cryptographic SHA-256 hash nodes pulsing across dual curved OLED screens, realistic weather radar heatmaps, sleek architectural avionics aesthetic, pristine studio lighting --ar 2.39:1 --v 6.1",
+        "sora2": "Cinematic wide shot inside an advanced vertiport operations control center at night. Flight dispatchers observe massive curved OLED displays tracking autonomous air corridors. On the primary cockpit screen, three technical moats are demonstrated: a pulsing cryptographic chain linking SHA-256 block hashes, a live simulated C2 radio severance that instantly reroutes an eVTOL to Burbank Alternate Pad 2, and high-frequency 10Hz MAVLink flight telemetry gauges rotating smoothly. Deep cinematic shadows, titanium and amber palette, 8k resolution.",
+        "runwayGen3": "[Camera: Dynamic arc shot around glass cockpit] Triple HUD display showing cryptographic blockchain audit ledger, autonomous off-grid flight path diversion, and 10Hz MAVLink attitude gauges, futuristic aerospace control room, hyper-realistic 8k render.",
+        "flux1": "Photorealistic 8K render of modern avionics glass cockpit showing real-time cryptographic audit chain, KBUR diversion flight vector, and MAVLink telemetry gauges, Denis Villeneuve aesthetic, anamorphic lens flare, 2.39:1."
+      }
+    },
+    {
+      "sceneNumber": 4,
+      "sceneId": "SCENE-04-COMMERCIAL-MONOPOLY",
+      "title": "COMMERCIAL MONOPOLY & CALL TO CAPITAL",
+      "timecode": {
+        "start": "00:02:20:00",
+        "end": "00:03:30:00",
+        "startSec": 140,
+        "endSec": 210,
+        "durationSec": 70
+      },
+      "pacing": "Epic, expansive, institutional, triumphant crescendo fading into absolute conviction",
+      "cameraSpecs": {
+        "lens": "Panavision Primo Anamorphic 50mm, T2.0",
+        "shutterAngle": "180°",
+        "movement": "High-altitude orbital jib descent smoothly settling onto landing approach corridor with urban skyline"
+      },
+      "visualDirection": {
+        "environment": "Futuristic Los Angeles / San Francisco bay waterfront vertiports bathed in twilight dusk",
+        "action": "High-angle orbital time-lapse of autonomous aircraft landing on illuminated urban vertipads. Sleek enterprise metrics graph overlaying recurring ARR per tail ($25,000/yr) and per-flight hour utilization. Fade to logo.",
+        "lighting": "Luminescent vertipad landing arrays, cyan runway approach strobes, twilight purple sky with golden city reflections",
+        "vfxOverlays": [
+          "Enterprise Unit Economics: $25,000 / year recurring ARR per active airframe tail",
+          "Continuous Flight-Hour Telemetry & Cryptographic Verification Fee stream",
+          "Software Validated • 135 Tests Passing • Branch: main locked",
+          "AeroOps AI v3.0 Institutional Seed Round Open"
+        ]
+      },
+      "audioCues": {
+        "soundEffects": [
+          "Distant resonant turbine spin-down on landing pad",
+          "MegaWatt charger pneumatic contact seal sound",
+          "Final triumphant cinematic sub-bass braam impact at T+3:15",
+          "Clean digital power-down tone into quiet breath"
+        ],
+        "musicTone": "Soaring, emotional brass and string crescendo resolving into a warm, grounded single-tone drone",
+        "audioDuckingLevel": "-12dB during voiceover"
+      },
+      "voiceover": {
+        "speaker": "Executive Aerospace Narrator (British / Mid-Atlantic Formal)",
+        "transcript": "Airframe manufacturers build hardware. Ride-shares sell tickets. AeroOps AI captures the mission-critical software layer: twenty-five thousand dollars annual ARR per tail plus continuous flight-hour telemetry fees. Software is validated; tests are green; the repository is locked on main. We are opening our Seed round to institutional partners building the infrastructure of flight.",
+        "cadence": "Unshakable conviction, visionary enterprise authority, historic moment",
+        "keyWordAccents": [
+          "build hardware",
+          "sell tickets",
+          "mission-critical software layer",
+          "twenty-five thousand dollars annual ARR",
+          "flight-hour telemetry fees",
+          "Software is validated",
+          "infrastructure of flight"
+        ]
+      },
+      "videoPrompts": {
+        "midjourney": "Breathtaking 8K aerial view of sleek eVTOL fleet smoothly approaching illuminated coastal vertiports at twilight, subtle glowing holographic fleet pathways, clean enterprise typography, cinematic anamorphic widescreen, masterpiece --ar 2.39:1 --v 6.1",
+        "sora2": "Epic high-angle aerial time-lapse of an electric air mobility vertiport network in San Francisco Bay during blue hour. Multiple autonomous eVTOL aircraft smoothly descend and touch down on circular illuminated fast-charging pads with pristine synchronization. Clean floating holographic enterprise charts show fleet growth curves and ARR monetization tiers. Breathtaking cinematography, photorealistic motion blur, 8k resolution, IMAX ratio feel.",
+        "runwayGen3": "[Camera: High-angle crane descent to ground level] Fleet of autonomous passenger drones landing on glowing coastal vertiport landing pads at twilight, holographic enterprise metrics floating in night air, cinematic grandeur, 8k resolution.",
+        "flux1": "Masterpiece 8K aerial shot of futuristic Los Angeles urban vertiport terminal with sleek eVTOL aircraft docking at MegaWatt charging stands, twilight reflections in water, clean venture capital typography, 2.39:1."
+      }
+    }
+  ]
+}

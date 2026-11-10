@@ -1,0 +1,99 @@
+================================================================================
+AEROOPS AI v3.0 — 8K MASTERCLASS CINEMATIC VIDEO & VOICEOVER PROMPTS
+Format: 8K Ultra-HD (7680x3213 / 7680x4320 Letterbox) | 2.39:1 Anamorphic | 60 FPS
+Aesthetic: Christopher Nolan / Denis Villeneuve Industrial Hyper-Realism
+Color Palette: Titanium Blue (#0A0F1D) | Radar Amber (#FFB800) | Avionics Teal (#00F2FE)
+================================================================================
+
+--------------------------------------------------------------------------------
+PART 1: MIDJOURNEY v6.1 / FLUX.1 PRO 8K KEYFRAME PROMPTS
+--------------------------------------------------------------------------------
+
+[SCENE 1 KEYFRAME — THE CERTIFICATION VOID]
+Cinematic 8K, photorealistic macro 35mm anamorphic shot of modern eVTOL aircraft navigating dense storm clouds over futuristic Los Angeles, volumetric rain streaks on composite canopy, amber HUD warning graphics reflected on glass, ultra-detailed textures, moody contrast, atmospheric lighting, Unreal Engine 5.4 render --ar 2.39:1 --style raw --v 6.1
+
+[SCENE 2 KEYFRAME — THE DETERMINISTIC AIRLOCK]
+Hyper-realistic 8K close-up interior avionics bay, glowing microprocessors with etched titanium heatsinks, holographic data streams splitting into green deterministic logic blocks and blue natural language vectors, macro depth of field, Octane render --ar 2.39:1 --v 6.1
+
+[SCENE 3 KEYFRAME — THE THREE IMPENETRABLE MOATS]
+Ultra-wide 8K shot of vertiport control center and cockpit glass HUD, cryptographic SHA-256 hash nodes pulsing across dual curved OLED screens, realistic weather radar heatmaps, sleek architectural avionics aesthetic, pristine studio lighting --ar 2.39:1 --v 6.1
+
+[SCENE 4 KEYFRAME — COMMERCIAL MONOPOLY & CALL TO CAPITAL]
+Breathtaking 8K aerial view of sleek eVTOL fleet smoothly approaching illuminated coastal vertiports at twilight, subtle glowing holographic fleet pathways, clean enterprise typography, cinematic anamorphic widescreen, masterpiece --ar 2.39:1 --v 6.1
+
+
+--------------------------------------------------------------------------------
+PART 2: OPENAI SORA 2 / LUMA DREAM MACHINE MOTION PROMPTS
+--------------------------------------------------------------------------------
+
+[SCENE 1 SORA 2 MOTION PROMPT — 0:00 to 0:35]
+Slow macro dolly shot moving along the sleek matte-carbon fiber wing of an electric vertical takeoff aircraft cutting through dense coastal turbulence clouds at sunset. Rain droplets streak horizontally across the pressurized glass canopy. Inside the cockpit, minimalist avionics HUD screens glow in amber and crimson wireframes warning of microburst shear exceeding 28 knots. Blade Runner 2049 cinematic lighting, 60fps, 8k resolution, photorealistic aerodynamics, 2.39:1 anamorphic ratio.
+
+[SCENE 2 SORA 2 MOTION PROMPT — 0:35 to 1:25]
+Smooth macroscopic push-in through the pressurized composite bulkhead of an aircraft into a high-reliability avionics bay. Etched gold circuit boards and titanium heat sinks radiate subtle thermal vapor. A glowing holographic interface bifurcates into two distinct layers: an electric green deterministic state engine executing at 100Hz with zero latency, and an upper cobalt blue cloud interface translating telemetry into clear natural language flight directives. Photorealistic, 8k, Christopher Nolan cinematic grade, 60fps, 2.39:1 widescreen.
+
+[SCENE 3 SORA 2 MOTION PROMPT — 1:25 to 2:20]
+Cinematic wide shot inside an advanced vertiport operations control center at night. Flight dispatchers observe massive curved OLED displays tracking autonomous air corridors. On the primary cockpit screen, three technical moats are demonstrated: a pulsing cryptographic chain linking SHA-256 block hashes, a live simulated C2 radio severance that instantly reroutes an eVTOL to Burbank Alternate Pad 2, and high-frequency 10Hz MAVLink flight telemetry gauges rotating smoothly. Deep cinematic shadows, titanium and amber palette, 8k resolution, 60fps.
+
+[SCENE 4 SORA 2 MOTION PROMPT — 2:20 to 3:30]
+Epic high-angle aerial time-lapse of an electric air mobility vertiport network in San Francisco Bay during blue hour. Multiple autonomous eVTOL aircraft smoothly descend and touch down on circular illuminated fast-charging pads with pristine synchronization. Clean floating holographic enterprise charts show fleet growth curves and ARR monetization tiers ($25,000/yr per tail). Breathtaking cinematography, photorealistic motion blur, 8k resolution, IMAX ratio feel, 60fps, 2.39:1 letterbox.
+
+
+--------------------------------------------------------------------------------
+PART 3: RUNWAY GEN-3 ALPHA / KLING 1.5 PROMPTS
+--------------------------------------------------------------------------------
+
+[SCENE 1 RUNWAY PROMPT]
+[Camera: Slow tracking dolly in, 35mm anamorphic] Autonomous eVTOL aircraft wing slice through dense volumetric clouds over Los Angeles skyline at golden hour, raindrops hitting canopy, amber cockpit HUD reflections, moody cinematic atmosphere, titanium blue color grade, photorealistic 8k.
+
+[SCENE 2 RUNWAY PROMPT]
+[Camera: Extreme macro push, rack focus] Titanium avionics bay interior with glowing microprocessors, split holographic data streams of green binary logic and blue natural language vectors, volumetric light beams, ultra-clean industrial realism, 8k anamorphic.
+
+[SCENE 3 RUNWAY PROMPT]
+[Camera: Dynamic arc shot around glass cockpit] Triple HUD display showing cryptographic blockchain audit ledger, autonomous off-grid flight path diversion, and 10Hz MAVLink attitude gauges, futuristic aerospace control room, hyper-realistic 8k render.
+
+[SCENE 4 RUNWAY PROMPT]
+[Camera: High-angle crane descent to ground level] Fleet of autonomous passenger drones landing on glowing coastal vertiport landing pads at twilight, holographic enterprise metrics floating in night air, cinematic grandeur, 8k resolution.
+
+
+--------------------------------------------------------------------------------
+PART 4: ELEVENLABS / MASTERCLASS VOICEOVER SYNTHESIS SPECIFICATION
+--------------------------------------------------------------------------------
+
+Recommended Voice Profile: "Sir Alistair" or "George - Authoritative British Executive"
+Language / Accent: British / Mid-Atlantic Formal Aviation Cadence
+Voice Settings:
+  - Stability: 0.75 (Precise, steady, authoritative gravitas)
+  - Clarity + Similarity: 0.90 (Broadcast-master quality, zero distortion)
+  - Style Exaggeration: 0.35 (Restrained, intellectual, commercial weight)
+  - Speaker Boost: ON
+  - Target Fundamental Pitch: 88 Hz to 94 Hz (Deep baritone resonance)
+
+MASTERCLASS VOICEOVER SCRIPT (WITH TIME-CODES):
+
+[00:00:00:00 - 00:00:35:00] SCENE 1: THE CERTIFICATION VOID
+"Urban air mobility is a confirmed 1.5-trillion-dollar frontier. Yet autonomy is paralyzed by a lethal vulnerability: commercial aviation rejects probabilistic cloud latency. A 200-millisecond delay over populated airspace is catastrophic hull loss. Aviation demands deterministic certifiability."
+
+[00:00:35:00 - 00:01:25:00] SCENE 2: THE DETERMINISTIC AIRLOCK
+"Enter AeroOps AI. Engineered to DO-178C Level A standards. At its base: a deterministic BlackBerry QNX 8.0 kernel evaluating physics, battery reserves, and aerodynamic vectors in sub-milliseconds. Above this airlock: Google Gemini 2.5 Flash translating dense aerospace telemetry into instant pilot briefings. Deterministic rules decide; explainable AI explains."
+
+[00:01:25:00 - 00:02:20:00] SCENE 3: THE THREE IMPENETRABLE MOATS
+"Three defensible enterprise moats. First: an FAA-grade cryptographic blackbox sealing every millisecond in an immutable SHA-256 Merkle ledger for forensic replay. Second: autonomous loss-of-link fail-safe executing off-grid diversions with zero cloud dependency. Third: native 10Hz MAVLink integration, fully verified across 135 continuous test suites."
+
+[00:02:20:00 - 00:03:30:00] SCENE 4: COMMERCIAL MONOPOLY & CALL TO CAPITAL
+"Airframe manufacturers build hardware. Ride-shares sell tickets. AeroOps AI captures the mission-critical software layer: twenty-five thousand dollars annual ARR per tail plus continuous flight-hour telemetry fees. Software is validated; tests are green; the repository is locked on main. We are opening our Seed round to institutional partners building the infrastructure of flight."
+
+
+--------------------------------------------------------------------------------
+PART 5: FOLEY & SOUND DESIGN CUE SHEET
+--------------------------------------------------------------------------------
+- T+00:04 | Sub-bass Inception-style Braam impact (24Hz with resonant 55Hz harmonic)
+- T+00:18 | DO-178C avionics master caution chime (dual-tone 880Hz / 1760Hz)
+- T+00:26 | Telemetry frame drop distortion burst (high-pass filtered white noise)
+- T+00:38 | QNX microkernel watchdog clock pulse (sub-millisecond heartbeat tick)
+- T+00:52 | Electric tilt-rotor turbine spool-up frequency ramp (400Hz to 1800Hz)
+- T+01:30 | Cryptographic Merkle block seal click (precision metallic clamp)
+- T+01:46 | Dual-radio C2 link disconnect tone followed by smooth fail-safe lock
+- T+02:24 | Night vertipad magnetic locking contact sound
+- T+03:15 | Final orchestral brass resolve and fading sub-bass heartbeat
+================================================================================

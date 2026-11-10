@@ -20,6 +20,7 @@ import { calculateLiveScores, RedFlagPivotItem, ScoreIndices } from "./scoring-r
 export interface PitchEvaluationRequest {
   transcript: string;
   currentUtterance?: string;
+  questionAsked?: string;
   elapsedSeconds?: number;
   activePersonaId?: string;
   hostilityLevel?: number; // 1 to 5
@@ -37,6 +38,13 @@ export interface PitchEvaluationResult {
   visualPresenceComment?: string | null;
   vcResponseText: string;
   followUpTrap: string;
+  // Mistake-catching & teleprompter guidance fields
+  verdict: "STRONG_ANSWER" | "PARTIAL_OR_VAGUE" | "CRITICAL_MISTAKE";
+  whatYouSaidQuote: string;
+  mistakeDetected: string;
+  idealAnswerScript: string;
+  questionAsked: string;
+  nextQuestion: string;
   liveScores: ScoreIndices;
   claimCritique: {
     topic: string;
@@ -438,14 +446,25 @@ export function evaluateDeterministicPitch(
     const inter = telemetry.interruption;
     const latencyMs = Math.round(performance.now() - startTime);
 
+    const isBoundaryBreach = inter.rule === "DETERMINISTIC_BOUNDARY_VIOLATION";
+
     return {
       persona: inter.interruptingPersona,
       vcFacialState: "LEANING_IN_INTERRUPT",
       wasInterrupted: true,
       interruptionReason: inter.ruleName,
       visualPresenceComment: "Sudden posture shift: leaning in to cut off speech stream.",
-      vcResponseText: inter.interjectionText,
+      vcResponseText: `Stop right there! You just said "${inter.offendingSnippet}". ${inter.interjectionText} ${inter.interruptingPersona.trapQuestions[0]?.question || "Explain your deterministic boundary immediately."}`,
       followUpTrap: "Address that failure mode immediately before we proceed with the rest of your pitch.",
+      verdict: isBoundaryBreach ? "CRITICAL_MISTAKE" : "PARTIAL_OR_VAGUE",
+      whatYouSaidQuote: inter.offendingSnippet,
+      mistakeDetected: isBoundaryBreach
+        ? "FATAL AVIATION BREACH: Stated that AI/LLM makes flight abort or control decisions. DO-178C prohibits probabilistic software in safety-critical actuation."
+        : `EVASION DETECTED: ${inter.ruleName} — Spoke in generalities without stating concrete unit economics or QNX performance metrics.`,
+      idealAnswerScript:
+        "Gemini operates strictly in a read-only advisory partition. All Go/No-Go and abort decisions are executed 100% deterministically by our C++20 kernel on QNX 8.0, commanding $1,200-$3,500 ARR/tail under Part 108.",
+      questionAsked: request.questionAsked || inter.interruptingPersona.openingQuestion.question,
+      nextQuestion: inter.interruptingPersona.trapQuestions[0]?.question || "Explain your deterministic boundary immediately.",
       liveScores: {
         ...liveScores,
         eyeContactAndPresence: Math.max(30, (liveScores.eyeContactAndPresence ?? 70) - 20),
@@ -503,20 +522,32 @@ export function evaluateDeterministicPitch(
     vcFacialState = "TAKING_NOTES";
   }
 
+  const isStrong = liveScores.composite >= 75;
+  const quoteSnippet = currentUtterance ? currentUtterance.slice(0, 110) : transcript.slice(0, 110);
+
   return {
     persona: finalPersona,
     vcFacialState,
     wasInterrupted: false,
     interruptionReason: null,
     visualPresenceComment:
-      liveScores.composite >= 75
+      isStrong
         ? "Strong direct gaze; posture steady and projecting executive confidence."
         : "Maintains camera connection; slight reading glance detected.",
-    vcResponseText: responseData.vcResponseText,
+    vcResponseText: `You noted: "${quoteSnippet}". ${isStrong ? "That aligns with our DO-178C DAL-B doctrine." : "However, you left out concrete unit economics and QNX latency guarantees."} ${responseData.followUpTrap}`,
     followUpTrap: responseData.followUpTrap,
+    verdict: isStrong ? "STRONG_ANSWER" : "PARTIAL_OR_VAGUE",
+    whatYouSaidQuote: quoteSnippet,
+    mistakeDetected: isStrong
+      ? "None. Pristine alignment with DO-178C DAL-B deterministic separation and $1,200-$3,500 ARR/tail unit economics."
+      : "MISSING QUANTITATIVE BENCHMARKS: Stated concepts without quoting $1,200-$3,500 ARR/tail, 84% margin, or sub-0.85ms WCET.",
+    idealAnswerScript:
+      "Our edge safety kernel runs ISO C++20 on BlackBerry QNX 8.0 with zero heap allocation post-boot, delivering sub-0.85ms WCET, while our hybrid SaaS model yields an 84% gross margin.",
+    questionAsked: request.questionAsked || finalPersona.openingQuestion.question,
+    nextQuestion: responseData.followUpTrap,
     liveScores: {
       ...liveScores,
-      eyeContactAndPresence: liveScores.eyeContactAndPresence ?? (liveScores.composite >= 75 ? 88 : 72),
+      eyeContactAndPresence: liveScores.eyeContactAndPresence ?? (isStrong ? 88 : 72),
     },
     claimCritique: {
       topic: matchedRule ? matchedRule.topic : "General Institutional Sparring",
