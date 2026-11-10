@@ -20,6 +20,7 @@ export interface ScoreIndices {
   icv: number; // Investor Clarity & GTM Score (0-100)
   vcp: number; // Vocal Conviction & Pacing Index (0-100)
   composite: number; // Weighted Overall Score (0-100)
+  eyeContactAndPresence?: number; // Visual Boardroom Presence (0-100)
 }
 
 export interface RedFlagPivotItem {

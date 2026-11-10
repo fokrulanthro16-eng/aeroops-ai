@@ -71,7 +71,7 @@ export function runPitchSimTests() {
     "Interruption reason must flag deterministic safety boundary violation"
   );
   assert(
-    boundaryResult.persona.id === "faa-der-auditor",
+    boundaryResult.persona.id === "marcus-vance" || boundaryResult.persona.id === "faa-der-auditor",
     `FAA DER Auditor must cut in during boundary breach (Got ${boundaryResult.persona.id})`
   );
 

@@ -1,11 +1,21 @@
 /**
  * ==============================================================================
  * AEROOPS AI — MULTI-PERSONA ADVERSARIAL STATE MACHINE
- * Version: 3.0 Enterprise Architecture Specification
- * Defines the 4 specialized investor/auditor personas with distinct psychological
- * profiles, voice signatures, hostility scalers, and trap question matrices.
+ * Version: 3.5 Nebius Multimodal & Boardroom Edition
+ * Defines the 4 specialized executive conference room personas:
+ * 1. Jason Kraus (Early-Stage Venture Catalyst - Prepare 4 VC)
+ * 2. Sarah Chen (Managing Partner - Deep-Tech Series A Lead)
+ * 3. Marcus Vance (FAA DER / DO-178C Avionics Safety Auditor)
+ * 4. Dr. Viktor Krenz (Principal QNX RTOS Embedded Systems Architect)
  * ==============================================================================
  */
+
+export type VCFacialState =
+  | "LISTENING"
+  | "SKEPTICAL_SQUINT"
+  | "TAKING_NOTES"
+  | "LEANING_IN_INTERRUPT"
+  | "NODDING_APPROVAL";
 
 export interface VCPersona {
   id: string;
@@ -13,20 +23,21 @@ export interface VCPersona {
   shortName: string;
   title: string;
   firm: string;
-  avatarIcon: string; // lucide icon identifier
-  themeColor: string; // hex
-  themeBorder: string; // tailwind border
-  themeBg: string; // tailwind bg
-  themeText: string; // tailwind text
+  avatarIcon: string;
+  themeColor: string;
+  themeBorder: string;
+  themeBg: string;
+  themeText: string;
   voiceConfig: {
-    pitch: number; // 0.1 to 2.0 (1.0 default)
-    rate: number; // 0.1 to 2.0 (1.0 default)
+    pitch: number;
+    rate: number;
     lang: string;
   };
   focusAreas: string[];
   keyInquiryTopics: string[];
-  provocations: string[]; // keywords that trigger this persona in Gauntlet mode
-  defaultHostility: number; // 1 (Friendly) to 5 (Hostile)
+  provocations: string[];
+  defaultHostility: number;
+  currentFacialState?: VCFacialState;
   trapQuestions: {
     hostility: number;
     question: string;
@@ -44,12 +55,19 @@ export interface VCPersona {
     skeptical: string[];
     alarmed: string[];
   };
+  statusMicroCaptions: {
+    listening: string;
+    skeptical: string;
+    notes: string;
+    interrupt: string;
+    approval: string;
+  };
 }
 
 export const VC_PERSONAS: VCPersona[] = [
   {
     id: "jason-kraus",
-    name: "Jason Kraus Archetype",
+    name: "Jason Kraus",
     shortName: "Jason Kraus",
     title: "Early-Stage Venture Catalyst",
     firm: "Prepare 4 VC / Angel Syndicate",
@@ -133,12 +151,19 @@ export const VC_PERSONAS: VCPersona[] = [
         "Total red flag: quoting a trillion-dollar TAM without an immediate 12-month wedge.",
       ],
     },
+    statusMicroCaptions: {
+      listening: "Jason is evaluating your commercial wedge and pilot conversion timeline...",
+      skeptical: "Jason doubts your 12-month $1M ARR path without drone delivery fleet LOIs...",
+      notes: "Jason is noting down your $1,200-$3,500 ARR per tail pricing tier...",
+      interrupt: "Jason is cutting in to force a concrete traction figure!",
+      approval: "Jason nods: smart capital efficiency to target Part 108 BVLOS first.",
+    },
   },
   {
-    id: "series-a-vc",
-    name: "Hard-Nosed Deep-Tech VC Partner",
-    shortName: "Series A VC",
-    title: "General Partner, Deep Tech & Defense",
+    id: "sarah-chen",
+    name: "Sarah Chen",
+    shortName: "Sarah Chen",
+    title: "Managing Partner, Deep-Tech Series A",
     firm: "Apex Horizon Ventures ($450M AUM)",
     avatarIcon: "ShieldAlert",
     themeColor: "#f59e0b", // Amber
@@ -222,12 +247,19 @@ export const VC_PERSONAS: VCPersona[] = [
         "Fatal blindspot: Palantir already has contracts with the exact same defense and commercial primes.",
       ],
     },
+    statusMicroCaptions: {
+      listening: "Sarah is auditing your gross margins and cloud inference COGS...",
+      skeptical: "Sarah suspects continuous telemetry will compress margins below 50%...",
+      notes: "Sarah is calculating CAC payback on $2,400/tail across 450 airframes...",
+      interrupt: "Sarah is demanding exact gross margin and payback numbers!",
+      approval: "Sarah nods: edge filtering protects 82%+ gross margins cleanly.",
+    },
   },
   {
-    id: "faa-der-auditor",
-    name: "Skeptical FAA DER / Regulatory Auditor",
-    shortName: "FAA DER Auditor",
-    title: "Designated Engineering Representative (DER)",
+    id: "marcus-vance",
+    name: "Marcus Vance",
+    shortName: "Marcus Vance",
+    title: "FAA Designated Engineering Representative (DER)",
     firm: "Avionics Safety & Certification Advisory (DO-178C Specialist)",
     avatarIcon: "Scale",
     themeColor: "#ef4444", // Crimson
@@ -314,11 +346,18 @@ export const VC_PERSONAS: VCPersona[] = [
         "This would be rejected at the first FAA DER preliminary hazard review.",
       ],
     },
+    statusMicroCaptions: {
+      listening: "Marcus is scrutinizing DO-178C DAL-B and ARP4754A partition bounds...",
+      skeptical: "Marcus is watching closely for probabilistic bleed into actuation...",
+      notes: "Marcus is reviewing the SHA-256 Merkle audit trail for FAA Part 135...",
+      interrupt: "Marcus halts the pitch: Safety boundary violation detected!",
+      approval: "Marcus agrees: 'Deterministic Decides, AI Explains' satisfies DAL-B.",
+    },
   },
   {
-    id: "qnx-architect",
-    name: "Principal Embedded Systems Architect",
-    shortName: "QNX Architect",
+    id: "viktor-krenz",
+    name: "Dr. Viktor Krenz",
+    shortName: "Dr. Viktor Krenz",
     title: "Chief Embedded Systems & RTOS Fellow",
     firm: "Ex-BlackBerry QNX / Raytheon Avionics",
     avatarIcon: "Cpu",
@@ -405,35 +444,43 @@ export const VC_PERSONAS: VCPersona[] = [
         "They haven't tested priority inversion under packet floods.",
       ],
     },
+    statusMicroCaptions: {
+      listening: "Dr. Krenz is profiling your QNX 8.0 SPSC lock-free buffer design...",
+      skeptical: "Dr. Krenz calculates WCET exceeds 1ms if dynamic malloc is called...",
+      notes: "Dr. Krenz approves static memory allocation post-boot under PSE52...",
+      interrupt: "Dr. Krenz cuts in: Priority inversion hazard under 1,000Hz load!",
+      approval: "Dr. Krenz nods: Microkernel POSIX PSE52 scheduling protects watchdog.",
+    },
   },
 ];
 
-/**
- * Returns a persona by id
- */
+// Compatibility aliases
+const ID_ALIASES: Record<string, string> = {
+  "series-a-vc": "sarah-chen",
+  "faa-der-auditor": "marcus-vance",
+  "qnx-architect": "viktor-krenz",
+};
+
 export function getPersonaById(id: string): VCPersona {
-  const found = VC_PERSONAS.find((p) => p.id === id);
+  const resolvedId = ID_ALIASES[id] || id;
+  const found = VC_PERSONAS.find((p) => p.id === resolvedId);
   return found || VC_PERSONAS[0];
 }
 
-/**
- * Selects which persona should speak or interrupt in Gauntlet mode based on
- * the content of the founder's statement.
- */
 export function selectRespondingPersona(
   transcript: string,
   currentPersonaId: string,
   isGauntletMode: boolean
 ): VCPersona {
+  const resolvedCurrentId = ID_ALIASES[currentPersonaId] || currentPersonaId;
+
   if (!isGauntletMode) {
-    return getPersonaById(currentPersonaId);
+    return getPersonaById(resolvedCurrentId);
   }
 
   const lower = transcript.toLowerCase();
-
-  // Score each persona based on provocation keywords in the transcript
   let bestScore = -1;
-  let bestPersona: VCPersona = getPersonaById(currentPersonaId);
+  let bestPersona: VCPersona = getPersonaById(resolvedCurrentId);
 
   for (const persona of VC_PERSONAS) {
     let score = 0;
@@ -443,8 +490,7 @@ export function selectRespondingPersona(
       }
     }
 
-    // Give a slight bonus if they are the current speaker to prevent erratic jumping
-    if (persona.id === currentPersonaId) {
+    if (persona.id === resolvedCurrentId) {
       score += 0.5;
     }
 
@@ -454,6 +500,5 @@ export function selectRespondingPersona(
     }
   }
 
-  // If no specific provocation detected, rotate or maintain current
   return bestPersona;
 }

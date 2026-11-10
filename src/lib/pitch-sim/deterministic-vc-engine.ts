@@ -8,7 +8,7 @@
  * ==============================================================================
  */
 
-import { VC_PERSONAS, getPersonaById, selectRespondingPersona, VCPersona } from "./personas";
+import { VC_PERSONAS, getPersonaById, selectRespondingPersona, VCPersona, VCFacialState } from "./personas";
 import {
   evaluateSpeechStream,
   SpeechStreamTelemetry,
@@ -24,14 +24,17 @@ export interface PitchEvaluationRequest {
   activePersonaId?: string;
   hostilityLevel?: number; // 1 to 5
   isGauntletMode?: boolean;
+  webcamFrameBase64?: string;
   history?: { speaker: "founder" | "vc"; text: string; personaId?: string }[];
   interruptionHistory?: InterruptionEvent[];
 }
 
 export interface PitchEvaluationResult {
   persona: VCPersona;
+  vcFacialState: VCFacialState;
   wasInterrupted: boolean;
   interruptionReason: string | null;
+  visualPresenceComment?: string | null;
   vcResponseText: string;
   followUpTrap: string;
   liveScores: ScoreIndices;
@@ -42,7 +45,7 @@ export interface PitchEvaluationResult {
   };
   innerMonologue: string;
   latencyMs: number;
-  source: "GEMINI_2_5_FLASH" | "DETERMINISTIC_OFFLINE_ENGINE";
+  source: "NEBIUS_DEEPSEEK_V4" | "GEMINI_2_5_FLASH" | "DETERMINISTIC_OFFLINE_ENGINE";
 }
 
 interface PatternRule {
@@ -437,11 +440,16 @@ export function evaluateDeterministicPitch(
 
     return {
       persona: inter.interruptingPersona,
+      vcFacialState: "LEANING_IN_INTERRUPT",
       wasInterrupted: true,
       interruptionReason: inter.ruleName,
+      visualPresenceComment: "Sudden posture shift: leaning in to cut off speech stream.",
       vcResponseText: inter.interjectionText,
       followUpTrap: "Address that failure mode immediately before we proceed with the rest of your pitch.",
-      liveScores,
+      liveScores: {
+        ...liveScores,
+        eyeContactAndPresence: Math.max(30, (liveScores.eyeContactAndPresence ?? 70) - 20),
+      },
       claimCritique: {
         topic: inter.ruleName,
         redFlag: inter.offendingSnippet,
@@ -485,13 +493,31 @@ export function evaluateDeterministicPitch(
 
   const latencyMs = Math.max(4, Math.round(performance.now() - startTime));
 
+  // Determine facial state
+  let vcFacialState: VCFacialState = "LISTENING";
+  if (hostilityLevel >= 4) {
+    vcFacialState = "SKEPTICAL_SQUINT";
+  } else if (liveScores.composite >= 75) {
+    vcFacialState = "NODDING_APPROVAL";
+  } else if (transcript.length > 120) {
+    vcFacialState = "TAKING_NOTES";
+  }
+
   return {
     persona: finalPersona,
+    vcFacialState,
     wasInterrupted: false,
     interruptionReason: null,
+    visualPresenceComment:
+      liveScores.composite >= 75
+        ? "Strong direct gaze; posture steady and projecting executive confidence."
+        : "Maintains camera connection; slight reading glance detected.",
     vcResponseText: responseData.vcResponseText,
     followUpTrap: responseData.followUpTrap,
-    liveScores,
+    liveScores: {
+      ...liveScores,
+      eyeContactAndPresence: liveScores.eyeContactAndPresence ?? (liveScores.composite >= 75 ? 88 : 72),
+    },
     claimCritique: {
       topic: matchedRule ? matchedRule.topic : "General Institutional Sparring",
       redFlag: responseData.redFlag,

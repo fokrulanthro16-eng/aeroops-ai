@@ -20,6 +20,7 @@ export const MAVLINK_MESSAGE_CRCS: Record<number, number> = {
   33: 104,  // GLOBAL_POSITION_INT
   147: 154, // BATTERY_STATUS
 };
+export const MAVLINK_CRC_EXTRA = MAVLINK_MESSAGE_CRCS;
 
 export interface MavlinkV2Header {
   magic: number;
