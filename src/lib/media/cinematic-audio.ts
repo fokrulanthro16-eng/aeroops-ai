@@ -143,6 +143,7 @@ class CinematicAudioPipeline {
   private tickerInterval: NodeJS.Timeout | null = null;
   private listeners: Set<PlaybackListener> = new Set();
   private lastFoleyLabel = "";
+  private voiceoverAudio: HTMLAudioElement | null = null;
 
   constructor() {
     // Audio context will be lazily initialized on user gesture
@@ -466,34 +467,60 @@ class CinematicAudioPipeline {
       return;
     }
 
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(scene.voiceoverText);
-    // Formal aerospace executive cadence
-    utterance.rate = 1.0;
-    utterance.pitch = 0.88; // Deep resonant baritone
-    utterance.volume = this.isMuted ? 0 : this.voiceVolume;
-
-    // Prefer high-quality formal British / Mid-Atlantic voices
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(
-      (v) =>
-        (v.lang === "en-GB" &&
-          (v.name.includes("Natural") ||
-            v.name.includes("George") ||
-            v.name.includes("Daniel") ||
-            v.name.includes("Oliver") ||
-            v.name.includes("Sonia"))) ||
-        (v.lang.startsWith("en") &&
-          (v.name.includes("Ryan") ||
-            v.name.includes("Guy") ||
-            v.name.includes("David") ||
-            v.name.includes("Alex")))
-    );
-
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
+    if (this.voiceoverAudio) {
+      this.voiceoverAudio.pause();
+      this.voiceoverAudio = null;
     }
+
+    try {
+      // Use Studio-Grade Neural Voiceover audio asset directly
+      const audio = new Audio("/assets/audio/aeroops_executive_voiceover.mp3");
+      this.voiceoverAudio = audio;
+      audio.volume = this.isMuted ? 0 : this.voiceVolume;
+
+      // Approximate scene start offsets in master audio (0, 39, 76, 120s)
+      const sceneOffsets = [0, 39, 76, 120];
+      const startOffset = sceneOffsets[sceneIndex] || 0;
+
+      audio.onplay = () => {
+        this.activeSceneIndex = sceneIndex;
+        this.isPlaying = true;
+        this.notify();
+      };
+
+      audio.onended = () => {
+        if (onComplete) onComplete();
+      };
+
+      audio.onerror = () => {
+        console.warn("Neural audio fallback to SpeechSynthesis");
+        this.fallbackSpeechSynthesis(scene, sceneIndex, onComplete);
+      };
+
+      audio.currentTime = startOffset;
+      audio.play().catch(() => {
+        this.fallbackSpeechSynthesis(scene, sceneIndex, onComplete);
+      });
+    } catch {
+      this.fallbackSpeechSynthesis(scene, sceneIndex, onComplete);
+    }
+  }
+
+  private fallbackSpeechSynthesis(
+    scene: MasterclassScene,
+    sceneIndex: number,
+    onComplete?: () => void
+  ): void {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      if (onComplete) onComplete();
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(scene.voiceoverText);
+    utterance.rate = 1.0;
+    utterance.pitch = 0.88;
+    utterance.volume = this.isMuted ? 0 : this.voiceVolume;
 
     utterance.onstart = () => {
       this.activeSceneIndex = sceneIndex;
@@ -594,6 +621,9 @@ class CinematicAudioPipeline {
 
   public pause(): void {
     this.isPlaying = false;
+    if (this.voiceoverAudio) {
+      this.voiceoverAudio.pause();
+    }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.pause();
     }
@@ -603,7 +633,9 @@ class CinematicAudioPipeline {
 
   public resume(): void {
     this.isPlaying = true;
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    if (this.voiceoverAudio && this.voiceoverAudio.paused) {
+      this.voiceoverAudio.play().catch(() => {});
+    } else if (typeof window !== "undefined" && "speechSynthesis" in window) {
       if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
       } else {
@@ -617,6 +649,11 @@ class CinematicAudioPipeline {
   public stop(): void {
     this.isPlaying = false;
     this.elapsedSec = 0;
+    if (this.voiceoverAudio) {
+      this.voiceoverAudio.pause();
+      this.voiceoverAudio.currentTime = 0;
+      this.voiceoverAudio = null;
+    }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }

@@ -106,15 +106,31 @@ export function runCinematicMediaTests(): { passed: number; failed: number; erro
   const pkgContent = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
   assert(pkgContent.scripts && pkgContent.scripts["render:video"], "package.json must contain 'render:video' script");
   assert(pkgContent.scripts && pkgContent.scripts["record:walkthrough"], "package.json must contain 'record:walkthrough' script");
+  assert(pkgContent.scripts && pkgContent.scripts["generate:audio"], "package.json must contain 'generate:audio' script");
 
   const walkthroughScriptPath = path.join(process.cwd(), "scripts", "render_cockpit_walkthrough.js");
   assert(fs.existsSync(walkthroughScriptPath), "scripts/render_cockpit_walkthrough.js walkthrough orchestrator must exist");
+
+  const neuralAudioScriptPath = path.join(process.cwd(), "scripts", "generate_neural_audio.js");
+  assert(fs.existsSync(neuralAudioScriptPath), "scripts/generate_neural_audio.js neural audio generator must exist");
 
   const walkthroughVideoPath = path.join(process.cwd(), "public", "assets", "video", "aeroops_cockpit_walkthrough.mp4");
   if (fs.existsSync(walkthroughVideoPath)) {
     const wtStats = fs.statSync(walkthroughVideoPath);
     assert(wtStats.size > 1000000, `Walkthrough MP4 video must be > 1MB (Got ${wtStats.size} bytes)`);
   }
+
+  // 5. Studio-Grade Neural Audio Assets Verification
+  const masterAudioPath = path.join(process.cwd(), "public", "assets", "audio", "aeroops_executive_voiceover.mp3");
+  assert(fs.existsSync(masterAudioPath), "public/assets/audio/aeroops_executive_voiceover.mp3 must exist");
+  const masterAudioStats = fs.statSync(masterAudioPath);
+  assert(masterAudioStats.size > 1000000, `Master Neural Voiceover must be > 1MB (Got ${masterAudioStats.size} bytes)`);
+
+  const nominalBriefingPath = path.join(process.cwd(), "public", "assets", "audio", "briefing_nominal.mp3");
+  assert(fs.existsSync(nominalBriefingPath), "briefing_nominal.mp3 must exist");
+
+  const windshearAlertPath = path.join(process.cwd(), "public", "assets", "audio", "alert_windshear.mp3");
+  assert(fs.existsSync(windshearAlertPath), "alert_windshear.mp3 must exist");
 
   return { passed, failed, errors };
 }
