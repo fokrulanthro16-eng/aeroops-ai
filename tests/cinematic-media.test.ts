@@ -88,6 +88,34 @@ export function runCinematicMediaTests(): { passed: number; failed: number; erro
   const allScenesHaveFoley = MASTERCLASS_SCENES.every((s) => s.foleyTriggers.length >= 3);
   assert(allScenesHaveFoley, "All 4 masterclass scenes must have at least 3 procedural foley sound triggers");
 
+  // 4. Autonomous Rendered MP4 Video Deliverables Verification
+  const primaryVideoPath = path.join(process.cwd(), "public", "assets", "video", "aeroops_pitch_presentation.mp4");
+  assert(fs.existsSync(primaryVideoPath), "public/assets/video/aeroops_pitch_presentation.mp4 must exist");
+  const primaryStats = fs.statSync(primaryVideoPath);
+  assert(primaryStats.size > 1000000, `Primary MP4 video must be > 1MB (Got ${primaryStats.size} bytes)`);
+
+  const aliasVideoPath = path.join(process.cwd(), "public", "assets", "video", "aeroops_8k_pitch.mp4");
+  assert(fs.existsSync(aliasVideoPath), "public/assets/video/aeroops_8k_pitch.mp4 must exist");
+  const aliasStats = fs.statSync(aliasVideoPath);
+  assert(aliasStats.size > 1000000, `Alias 8K pitch video must be > 1MB (Got ${aliasStats.size} bytes)`);
+
+  const generatorScriptPath = path.join(process.cwd(), "scripts", "generate_mp4.js");
+  assert(fs.existsSync(generatorScriptPath), "scripts/generate_mp4.js autonomous video orchestrator must exist");
+
+  const pkgJsonPath = path.join(process.cwd(), "package.json");
+  const pkgContent = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+  assert(pkgContent.scripts && pkgContent.scripts["render:video"], "package.json must contain 'render:video' script");
+  assert(pkgContent.scripts && pkgContent.scripts["record:walkthrough"], "package.json must contain 'record:walkthrough' script");
+
+  const walkthroughScriptPath = path.join(process.cwd(), "scripts", "render_cockpit_walkthrough.js");
+  assert(fs.existsSync(walkthroughScriptPath), "scripts/render_cockpit_walkthrough.js walkthrough orchestrator must exist");
+
+  const walkthroughVideoPath = path.join(process.cwd(), "public", "assets", "video", "aeroops_cockpit_walkthrough.mp4");
+  if (fs.existsSync(walkthroughVideoPath)) {
+    const wtStats = fs.statSync(walkthroughVideoPath);
+    assert(wtStats.size > 1000000, `Walkthrough MP4 video must be > 1MB (Got ${wtStats.size} bytes)`);
+  }
+
   return { passed, failed, errors };
 }
 

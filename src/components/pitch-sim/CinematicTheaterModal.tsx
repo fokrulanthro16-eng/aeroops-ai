@@ -42,8 +42,8 @@ export const CinematicTheaterModal: React.FC<CinematicTheaterModalProps> = ({
   const [playbackState, setPlaybackState] = useState<AudioPlaybackState>(
     cinematicAudioPipeline.getState()
   );
-  const [activeTab, setActiveTab] = useState<"VOICEOVER" | "PROMPTS" | "TECHNICAL">(
-    "VOICEOVER"
+  const [activeTab, setActiveTab] = useState<"VIDEO" | "VOICEOVER" | "PROMPTS" | "TECHNICAL">(
+    "VIDEO"
   );
   const [copiedPromptId, setCopiedPromptId] = useState<string | null>(null);
 
@@ -98,6 +98,15 @@ export const CinematicTheaterModal: React.FC<CinematicTheaterModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2.5">
+            <a
+              href="/assets/video/aeroops_pitch_presentation.mp4"
+              download="aeroops_pitch_presentation.mp4"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-xs font-mono text-cyan-300 transition shadow-[0_0_12px_rgba(0,242,254,0.15)]"
+              title="Download Autonomous H.264 MP4 Presentation"
+            >
+              <Download className="w-3.5 h-3.5 text-cyan-300 animate-bounce" />
+              <span>Download MP4</span>
+            </a>
             <a
               href="/assets/video/storyboard-manifest.json"
               download
@@ -302,41 +311,89 @@ export const CinematicTheaterModal: React.FC<CinematicTheaterModalProps> = ({
 
         {/* Tabbed Inspector: Voiceover / 8K Prompts / Technical Specs */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3">
+          <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab("VIDEO")}
+              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 whitespace-nowrap ${
+                activeTab === "VIDEO"
+                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-[0_0_12px_rgba(0,242,254,0.2)]"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              <Film className="w-3.5 h-3.5 text-cyan-400" />
+              <span>🎥 Master Presentation MP4 (Live Player)</span>
+            </button>
             <button
               onClick={() => setActiveTab("VOICEOVER")}
-              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "VOICEOVER"
                   ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
               <Radio className="w-3.5 h-3.5" />
-              <span>1. Masterclass Voiceover & Foley Sync</span>
+              <span>1. Voiceover & Foley Audio Sync</span>
             </button>
             <button
               onClick={() => setActiveTab("PROMPTS")}
-              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "PROMPTS"
                   ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>2. 8K AI Generation Prompts (Sora 2 / Midjourney / Runway)</span>
+              <span>2. 8K AI Generation Prompts</span>
             </button>
             <button
               onClick={() => setActiveTab("TECHNICAL")}
-              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "TECHNICAL"
                   ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/30"
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
               <Sliders className="w-3.5 h-3.5" />
-              <span>3. Lens & Production Specification</span>
+              <span>3. Lens & Production Specs</span>
             </button>
           </div>
+
+          {/* TAB 0: Master Presentation MP4 Video */}
+          {activeTab === "VIDEO" && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="relative rounded-2xl overflow-hidden border border-cyan-500/30 bg-black shadow-[0_0_40px_rgba(0,242,254,0.15)] aspect-[16/9] max-h-[440px] mx-auto flex items-center justify-center">
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster="/assets/video/storyboard-manifest.json"
+                  className="w-full h-full object-contain"
+                  src="/assets/video/aeroops_pitch_presentation.mp4"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-slate-500">Visual Standard</div>
+                  <div className="text-xs font-bold font-mono text-white">1920x1080 (2.39:1 Cinema)</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-slate-500">Master Duration</div>
+                  <div className="text-xs font-bold font-mono text-cyan-300">02:05.87 (4 Full Scenes)</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-slate-500">Audio Profile</div>
+                  <div className="text-xs font-bold font-mono text-amber-300">Speech + Sub-Bass Braams</div>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 space-y-1">
+                  <div className="text-[10px] font-mono uppercase text-slate-500">Codec & Delivery</div>
+                  <div className="text-xs font-bold font-mono text-emerald-400">H.264 High / AAC MP4</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* TAB 1: Masterclass Voiceover */}
           {activeTab === "VOICEOVER" && (

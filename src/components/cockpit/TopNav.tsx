@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck, Film } from "lucide-react";
+import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck, Film, Video } from "lucide-react";
 import { FlightViewMode } from "./FlightModeToggle";
 import { CinematicTheaterModal } from "@/components/pitch-sim/CinematicTheaterModal";
+import { CockpitWalkthroughModal } from "./CockpitWalkthroughModal";
 
 interface TopNavProps {
   currentMode: "LIVE" | "SIM" | "HYBRID";
@@ -31,6 +32,7 @@ export const TopNav: React.FC<TopNavProps> = ({
 }) => {
   const [utcTime, setUtcTime] = useState<string>("");
   const [isCinematicOpen, setIsCinematicOpen] = useState(false);
+  const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -190,6 +192,16 @@ export const TopNav: React.FC<TopNavProps> = ({
             <span className="hidden sm:inline">8K Reel</span>
           </button>
 
+          {/* Cockpit 4K/HD Video Walkthrough Button */}
+          <button
+            onClick={() => setIsWalkthroughOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/30 hover:border-emerald-400/50 text-xs font-medium text-emerald-200 hover:text-white transition shadow-[0_0_12px_rgba(16,185,129,0.15)]"
+            title="Play 4K Mission Cockpit Walkthrough Video"
+          >
+            <Video className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline">Walkthrough</span>
+          </button>
+
           {/* Fleet Hub Link */}
           <Link
             href="/fleet"
@@ -214,6 +226,12 @@ export const TopNav: React.FC<TopNavProps> = ({
       <CinematicTheaterModal
         isOpen={isCinematicOpen}
         onClose={() => setIsCinematicOpen(false)}
+      />
+
+      {/* Cockpit 4K Autonomous Walkthrough Modal */}
+      <CockpitWalkthroughModal
+        isOpen={isWalkthroughOpen}
+        onClose={() => setIsWalkthroughOpen(false)}
       />
     </header>
   );

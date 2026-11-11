@@ -36,3 +36,6 @@ next-env.d.ts
 core-qnx/bin/
 *.o
 *.elf
+
+# temporary media rendering cache
+tmp_media/

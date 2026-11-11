@@ -11,6 +11,8 @@
     "test:qnx": "tsx tests/qnx-bridge.test.ts",
     "test:moat": "tsx tests/v3-moat-capabilities.test.ts",
     "test:cinematic": "tsx tests/cinematic-media.test.ts",
+    "render:video": "node scripts/generate_mp4.js",
+    "record:walkthrough": "node scripts/render_cockpit_walkthrough.js",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts"
   },
@@ -22,6 +24,7 @@
     "framer-motion": "^11.5.4",
     "lucide-react": "^0.439.0",
     "next": "^14.2.10",
+    "puppeteer-core": "^25.17.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.2",
