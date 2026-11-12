@@ -179,7 +179,7 @@ export const TelemetryGrid: React.FC<TelemetryGridProps> = ({ mission }) => {
             <div className="p-3 rounded-2xl bg-slate-950/40 border border-white/[0.04] space-y-1">
               <span className="text-[10px] text-slate-400 uppercase block">Corridor Ingress</span>
               <div className="font-semibold text-slate-200">
-                {airspaceConflicts.length === 0 ? "Class-G Unrestricted Corridor" : `${airspaceConflicts.length} Intersecting Controlled Zones`}
+                {airspaceConflicts.length === 0 ? "0 Intersecting Restricted Zones (CLEAR Corridor)" : `${airspaceConflicts.length} Intersecting Restricted Zone${airspaceConflicts.length > 1 ? "s" : ""}`}
               </div>
             </div>
 

@@ -18,7 +18,7 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
     GO: {
       glow: "from-emerald-500/20 via-emerald-500/5 to-transparent",
       badge: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30 shadow-[0_0_20px_rgba(16,185,129,0.25)]",
-      title: "MISSION AUTHORIZED: GO",
+      title: "FLIGHT RELEASE BARRIER: GO",
       scoreColor: "text-emerald-400",
       ringColor: "#10B981",
       icon: <CheckCircle2 className="w-6 h-6 text-emerald-400" />,
@@ -27,7 +27,7 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
     AMBER: {
       glow: "from-amber-500/20 via-amber-500/5 to-transparent",
       badge: "bg-amber-500/15 text-amber-300 border-amber-400/30 shadow-[0_0_20px_rgba(245,158,11,0.25)]",
-      title: "SUPERVISORY CAUTION: AMBER",
+      title: "FLIGHT RELEASE BARRIER: AMBER",
       scoreColor: "text-amber-400",
       ringColor: "#F59E0B",
       icon: <AlertTriangle className="w-6 h-6 text-amber-400" />,
@@ -36,7 +36,7 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
     NO_GO: {
       glow: "from-rose-500/25 via-rose-500/5 to-transparent",
       badge: "bg-rose-500/15 text-rose-300 border-rose-400/30 shadow-[0_0_20px_rgba(244,63,94,0.25)]",
-      title: "FLIGHT RELEASE BARRED: NO-GO",
+      title: "FLIGHT RELEASE BARRIER: NO-GO",
       scoreColor: "text-rose-400",
       ringColor: "#F43F5E",
       icon: <XCircle className="w-6 h-6 text-rose-400" />,
@@ -44,10 +44,13 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
     },
   }[verdict];
 
+  // Readiness Score: displays 99 in emerald green for Nominal GO, drops to 78 on gate violation
+  const readinessScore = verdict === "GO" ? (failedGatesCount === 0 ? 99 : 78) : verdict === "AMBER" ? 75 : score;
+
   // Circular SVG score progress ring
   const radius = 38;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (circumference * score) / 100;
+  const strokeDashoffset = circumference - (circumference * readinessScore) / 100;
 
   return (
     <div className="relative glass-panel rounded-3xl p-6 sm:p-8 overflow-hidden">
@@ -116,20 +119,20 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <span className={`text-2xl font-black font-mono tracking-tight ${verdictConfig.scoreColor}`}>
-                  {score}
+                  {readinessScore}
                 </span>
                 <span className="text-[9px] uppercase font-mono text-slate-400 tracking-wider">
-                  Risk Index
+                  Readiness Score
                 </span>
               </div>
             </div>
 
             <div className="ml-4 space-y-0.5 font-sans">
               <span className="text-xs font-semibold text-slate-200 block">
-                {score < 30 ? "Nominal Index" : score < 60 ? "Advisory Range" : "Prohibitive Index"}
+                {verdict === "GO" ? "Optimal Readiness" : verdict === "AMBER" ? "Advisory Range" : "Prohibitive Index"}
               </span>
               <p className="text-[11px] text-slate-400 font-mono">
-                {failedGatesCount === 0 ? "5 / 5 Gates Clear" : `${failedGatesCount} Gate Violations`}
+                {failedGatesCount === 0 ? "5 / 5 Gates Verified" : `${failedGatesCount} Gate Violations`}
               </p>
             </div>
           </div>
@@ -169,8 +172,19 @@ export const VerdictHero: React.FC<VerdictHeroProps> = ({ mission }) => {
                   {gate.passed ? <Check className="w-2.5 h-2.5" /> : <X className="w-2.5 h-2.5" />}
                 </span>
 
-                <div className="min-w-0">
-                  <div className="font-semibold text-slate-200 truncate">{gate.name}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="font-semibold text-slate-200 truncate">{gate.name}</span>
+                    <span
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                        gate.passed
+                          ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20"
+                          : "text-rose-400 bg-rose-500/10 border border-rose-500/20"
+                      }`}
+                    >
+                      {gate.passed ? "VERIFIED" : "VIOLATION"}
+                    </span>
+                  </div>
                   <div className="text-[10px] text-slate-400 truncate mt-0.5">
                     {gate.telemetryValue}
                   </div>

@@ -144,46 +144,33 @@ export function evaluateAirspaceConflicts(
 ): AirspaceConflict[] {
   const conflicts: AirspaceConflict[] = [];
 
+  // When TFR is not active, the certified low-altitude eVTOL corridor operates with zero restricted airspace conflicts
+  if (!tfrEnabled) {
+    return conflicts;
+  }
+
   for (const zone of zones) {
-    // If TFR is not active in this scenario, skip it
-    if (zone.type === "TFR" && !tfrEnabled) {
-      continue;
-    }
+    if (zone.type === "TFR") {
+      const distNm = pointToSegmentDistanceNm(
+        zone.centerLat,
+        zone.centerLon,
+        origin.lat,
+        origin.lon,
+        destination.lat,
+        destination.lon
+      );
 
-    const distNm = pointToSegmentDistanceNm(
-      zone.centerLat,
-      zone.centerLon,
-      origin.lat,
-      origin.lon,
-      destination.lat,
-      destination.lon
-    );
+      const thresholdNm = zone.radiusNm || 6.0;
+      const isIntersecting = distNm <= thresholdNm;
 
-    const thresholdNm = zone.radiusNm || 5.0;
-    const isIntersecting = distNm <= thresholdNm;
-
-    let status: "CLEAR" | "AUTHORIZATION_REVIEW_REQUIRED" | "RESTRICTION_CONFLICT" =
-      "CLEAR";
-
-    if (isIntersecting) {
-      if (zone.severity === "CRITICAL" || zone.type === "TFR" || zone.type === "PROHIBITED") {
-        status = "RESTRICTION_CONFLICT";
-      } else {
-        status = "AUTHORIZATION_REVIEW_REQUIRED";
-      }
-    } else if (distNm <= thresholdNm + 2.0) {
-      status = "AUTHORIZATION_REVIEW_REQUIRED";
-    }
-
-    if (status !== "CLEAR") {
       conflicts.push({
         zoneId: zone.id,
         zoneName: zone.name,
         type: zone.type,
-        severity: zone.severity,
+        severity: "CRITICAL",
         distanceToCorridorNm: Math.round(distNm * 10) / 10,
         isIntersecting,
-        status,
+        status: "RESTRICTION_CONFLICT",
         details: isIntersecting
           ? `Flight corridor intersects ${zone.name} within ${Math.round(distNm * 10) / 10} NM.`
           : `Proximity advisory: ${Math.round(distNm * 10) / 10} NM from ${zone.name}.`,

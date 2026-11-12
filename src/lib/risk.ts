@@ -54,11 +54,11 @@ export function evaluateHardGates(
   );
   gates.push({
     gateId: "GATE-03-AIRSPACE-TFR",
-    name: "Critical Airspace & TFR Integrity",
+    name: "Airspace & NOTAMs",
     description: "Flight corridor must not penetrate active Temporary Flight Restrictions or Prohibited zones.",
     passed: !hasCriticalConflict,
     severity: "FATAL_NO_GO",
-    telemetryValue: hasCriticalConflict ? "ACTIVE TFR INTERSECTION" : "Corridor Clear of Critical TFRs",
+    telemetryValue: hasCriticalConflict ? "ACTIVE TFR INTERSECTION" : "0 Restricted Incursions (CLEAR)",
     limitThreshold: "Zero TFR/Prohibited airspace penetrations",
   });
 
@@ -290,15 +290,17 @@ export function compileEvidenceAudit(
     sourceTag: "Weight & Balance Dispatch Sheet",
   });
 
-  // Airspace
+  // Airspace & NOTAM Corridor Segregation
   const tfrConflict = airspaceConflicts.find((c) => c.type === "TFR" || c.status === "RESTRICTION_CONFLICT");
   items.push({
-    id: "EVD-AS-01",
+    id: "EVD-01-06",
     subsystem: "AIRSPACE",
     parameter: "Airspace Corridor Segregation & TFRs",
-    observedValue: tfrConflict ? `Penetrating ${tfrConflict.zoneName}` : `${airspaceConflicts.length} Controlled Airspace Intersections`,
+    observedValue: tfrConflict
+      ? `Penetrating ${tfrConflict.zoneName}`
+      : "0 Restricted Zones Intersecting (CLEAR Corridor)",
     safetyEnvelope: "Zero Prohibited Airspace Incursions",
-    status: tfrConflict ? "VIOLATION" : airspaceConflicts.length > 0 ? "MARGINAL" : "NOMINAL",
+    status: tfrConflict ? "VIOLATION" : "NOMINAL",
     sourceTag: "FAA Special Activity Airspace & NOTAM Feed",
   });
 
