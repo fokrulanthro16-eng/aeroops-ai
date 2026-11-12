@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plane, Activity, FileText, Layers, Radio, Sparkles, RefreshCw, UserCheck, Film, Video } from "lucide-react";
+import { Plane, Activity, FileText, Layers, Radio, RefreshCw, UserCheck, Video } from "lucide-react";
 import { FlightViewMode } from "./FlightModeToggle";
 import { CinematicTheaterModal } from "@/components/pitch-sim/CinematicTheaterModal";
 import { CockpitWalkthroughModal } from "./CockpitWalkthroughModal";
@@ -171,26 +171,6 @@ export const TopNav: React.FC<TopNavProps> = ({
               {mounted && utcTime ? utcTime : "00:00:00 UTC"}
             </span>
           </div>
-
-          {/* VC Pitch Sparring Simulator Link */}
-          <Link
-            href="/pitch-sim"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-950/40 hover:bg-indigo-900/50 border border-indigo-500/30 hover:border-indigo-400/50 text-xs font-medium text-indigo-200 hover:text-white transition shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-            title="Launch VC Pitch & Technical Due Diligence Simulator"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden sm:inline">VC Sparring Sim</span>
-          </Link>
-
-          {/* 8K Masterclass Cinematic Video & Voiceover Assets Pipeline Button */}
-          <button
-            onClick={() => setIsCinematicOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 hover:border-cyan-400/50 text-xs font-medium text-cyan-200 hover:text-white transition shadow-[0_0_12px_rgba(0,242,254,0.15)]"
-            title="8K Masterclass Cinematic Video & Voiceover Pipeline"
-          >
-            <Film className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="hidden sm:inline">8K Reel</span>
-          </button>
 
           {/* Cockpit 4K/HD Video Walkthrough Button */}
           <button
