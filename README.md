@@ -70,7 +70,7 @@ AeroOps AI enforces an unyielding architectural airlock:
 
 ```mermaid
 graph TD
-    subgraph AIRBORNE_AVIONICS [Airborne Flight Safety Airlock (QNX Neutrino 8.0 / C++)]
+    subgraph AIRBORNE_AVIONICS ["Airborne Flight Safety Airlock (QNX Neutrino 8.0 / C++)"]
         S1[MAVLink v2 SITL Stream 10Hz] --> KERNEL[Deterministic Safety Kernel]
         S2[BMS Cell Voltage / Temp Sensors] --> KERNEL
         S3[Dual C2 Radio Status Monitor] --> KERNEL
@@ -80,27 +80,27 @@ graph TD
         GATE -->|C2 Disruption| LOL[Airborne Autonomous Fail-Safe: KBUR Pad 2]
     end
 
-    subgraph TELEMETRY_GATEWAY [Aviation Telemetry & Protocol Ingestion]
+    subgraph TELEMETRY_GATEWAY ["Aviation Telemetry & Protocol Ingestion"]
         S1 --> MAVPARSE[MAVLink v2 Binary Packet Parser]
         METAR[NOAA Live METAR / TAF Bridge] --> WXPARSE[Venturi Micro-Weather Scaler]
         MAVPARSE --> STREAM[Telemetry Stream Adapter]
         WXPARSE --> STREAM
     end
 
-    subgraph CRYPTO_LEDGER [DO-178C Blackbox Audit Ledger]
+    subgraph CRYPTO_LEDGER ["DO-178C Blackbox Audit Ledger"]
         GATE -->|Operational State Transitions| MERKLE[SHA-256 Merkle-Chained Ledger]
         LOL -->|Offline Block Queue| MERKLE
         MERKLE --> BLOCKS[Immutable Flight Blackbox Blocks]
         BLOCKS --> REPLAY[NTSB Forensic Incident Replay Deck]
     end
 
-    subgraph EXPLAINABLE_AI [Decoupled Observability & AI Copilot]
+    subgraph EXPLAINABLE_AI ["Decoupled Observability & AI Copilot"]
         GATE -.->|Verified Ground-Truth Payload| GEMINI[Google Gemini 2.5 Flash]
         GEMINI -.-> BRIEF[Structured Executive Dispatch Briefing]
         BRIEF -.-> TTS[Web Speech Radio ATC Dispatch Audio]
     end
 
-    subgraph COCKPIT_HUD [AeroOps Glass Cockpit Interface (Next.js 14)]
+    subgraph COCKPIT_HUD ["AeroOps Glass Cockpit Interface (Next.js 14)"]
         STREAM --> HUD[Executive Mission Cockpit & 10Hz SITL HUD]
         ACTUATE --> HUD
         BLOCKS --> HUD
